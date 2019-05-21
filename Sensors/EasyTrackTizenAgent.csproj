@@ -31,96 +31,12 @@
     <EmbeddedResource Update="App.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="Pages\AccelerometerPage.xaml">
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Pages\GravityPage.xaml">
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Pages\GyroscopePage.xaml">
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Pages\HRMPage.xaml">
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Pages\HumidityPage.xaml">
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Pages\LightPage.xaml">
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Pages\LinearAccelerationPage.xaml">
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Pages\MagnetometerPage.xaml">
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Pages\OrientationPage.xaml">
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Pages\PressurePage.xaml">
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Pages\ProximityPage.xaml">
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Pages\RotationVectorPage.xaml">
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Pages\TemperaturePage.xaml">
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Pages\UltravioletPage.xaml">
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <None Update="App.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>
     <None Update="Main.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </None>
-    <None Update="Pages\AccelerometerPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </None>
-    <None Update="Pages\GravityPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </None>
-    <None Update="Pages\GyroscopePage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </None>
-    <None Update="Pages\HRMPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </None>
-    <None Update="Pages\HumidityPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </None>
-    <None Update="Pages\LightPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </None>
-    <None Update="Pages\LinearAccelerationPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </None>
-    <None Update="Pages\MagnetometerPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </None>
-    <None Update="Pages\OrientationPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </None>
-    <None Update="Pages\PressurePage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </None>
-    <None Update="Pages\ProximityPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </None>
-    <None Update="Pages\RotationVectorPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </None>
-    <None Update="Pages\TemperaturePage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </None>
-    <None Update="Pages\UltravioletPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>
   </ItemGroup>
