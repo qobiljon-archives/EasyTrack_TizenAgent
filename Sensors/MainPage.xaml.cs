@@ -8,7 +8,7 @@ using System.Text;
 using Tizen.Sensor;
 using Sensors.Model;
 using Tizen.Security;
-using System.Threading.Tasks;
+using System.Threading;
 
 namespace Sensors
 {
@@ -22,45 +22,17 @@ namespace Sensors
             // connect();
         }
 
-        #region Variables
-        // Log properties
-        private string openLogStreamStamp;
-        private StreamWriter logStreamWriter;
-        private int logLinesCount = 1;
+        protected override void OnAppearing()
+        {
+            terminateFilesCounterThread();
+            startFilesCounterThread();
+        }
 
-        // Connection properties
-        private Agent agent;
-        private Connection conn;
-        private Peer peer;
-
-        // Sensors and their SensorModels
-        internal Accelerometer accelerometer { get; private set; }
-        internal AccelerometerModel accelerometerModel { get; private set; }
-        internal GravityModel gravityModel { get; private set; }
-        internal GravitySensor gravity { get; private set; }
-        internal GyroscopeModel gyroscopeModel { get; private set; }
-        internal Gyroscope gyroscope { get; private set; }
-        internal HRMModel hRMModel { get; private set; }
-        internal HeartRateMonitor hRM { get; private set; }
-        internal HumidityModel humidityModel { get; private set; }
-        internal HumiditySensor humidity { get; private set; }
-        internal LightModel lightModel { get; private set; }
-        internal LightSensor light { get; private set; }
-        internal LinearAccelerationModel linearAccelerationModel { get; private set; }
-        internal LinearAccelerationSensor linearAcceleration { get; private set; }
-        internal MagnetometerModel magnetometerModel { get; private set; }
-        internal Magnetometer magnetometer { get; private set; }
-        internal OrientationModel orientationModel { get; private set; }
-        internal OrientationSensor orientation { get; private set; }
-        internal PressureModel pressureModel { get; private set; }
-        internal PressureSensor pressure { get; private set; }
-        internal ProximityModel proximityModel { get; private set; }
-        internal ProximitySensor proximity { get; private set; }
-        internal TemperatureModel temperatureModel { get; private set; }
-        internal TemperatureSensor temperature { get; private set; }
-        internal UltravioletModel ultravioletModel { get; private set; }
-        internal UltravioletSensor ultraviolet { get; private set; }
-        #endregion
+        protected override void OnDisappearing()
+        {
+            terminateFilesCounterThread();
+            base.OnDisappearing();
+        }
 
         private void initEasyTrackTizenAgent()
         {
@@ -214,7 +186,7 @@ namespace Sensors
             #endregion
         }
 
-        private async void connect()
+        private async void initAgentConnection()
         {
             agent = await Agent.GetAgent("/sample/hello", onConnect: (con) =>
             {
@@ -238,6 +210,49 @@ namespace Sensors
                     return false;
             });
         }
+
+        #region Variables
+        // Log properties
+        private Thread filesCounterThread;
+        private string openLogStreamStamp;
+        private StreamWriter logStreamWriter;
+        private int logLinesCount = 1;
+        private int filesCount;
+        private bool stopFilesCounterThread;
+
+        // Connection properties
+        private Agent agent;
+        private Connection conn;
+        private Peer peer;
+
+        // Sensors and their SensorModels
+        internal Accelerometer accelerometer { get; private set; }
+        internal AccelerometerModel accelerometerModel { get; private set; }
+        internal GravityModel gravityModel { get; private set; }
+        internal GravitySensor gravity { get; private set; }
+        internal GyroscopeModel gyroscopeModel { get; private set; }
+        internal Gyroscope gyroscope { get; private set; }
+        internal HRMModel hRMModel { get; private set; }
+        internal HeartRateMonitor hRM { get; private set; }
+        internal HumidityModel humidityModel { get; private set; }
+        internal HumiditySensor humidity { get; private set; }
+        internal LightModel lightModel { get; private set; }
+        internal LightSensor light { get; private set; }
+        internal LinearAccelerationModel linearAccelerationModel { get; private set; }
+        internal LinearAccelerationSensor linearAcceleration { get; private set; }
+        internal MagnetometerModel magnetometerModel { get; private set; }
+        internal Magnetometer magnetometer { get; private set; }
+        internal OrientationModel orientationModel { get; private set; }
+        internal OrientationSensor orientation { get; private set; }
+        internal PressureModel pressureModel { get; private set; }
+        internal PressureSensor pressure { get; private set; }
+        internal ProximityModel proximityModel { get; private set; }
+        internal ProximitySensor proximity { get; private set; }
+        internal TemperatureModel temperatureModel { get; private set; }
+        internal TemperatureSensor temperature { get; private set; }
+        internal UltravioletModel ultravioletModel { get; private set; }
+        internal UltravioletSensor ultraviolet { get; private set; }
+        #endregion
 
         #region UI Event callbacks
         private void reportDataCollection(object sender, EventArgs e)
@@ -445,12 +460,30 @@ namespace Sensors
                 {
                     string tmp = file.Substring(file.LastIndexOf('/') + 1);
                     if (long.TryParse(tmp.Substring(0, tmp.LastIndexOf('.')), out timeStamp))
-                        log(tmp);
+                        File.Delete(file);
                 }
                 catch (Exception e)
                 {
                     log(e.Message);
                 }
+        }
+
+        private int countSensorDataFiles()
+        {
+            int count = 0;
+            long timeStamp;
+            foreach (string file in Directory.GetFiles(Tools.APP_DIR))
+                try
+                {
+                    string tmp = file.Substring(file.LastIndexOf('/') + 1);
+                    if (long.TryParse(tmp.Substring(0, tmp.LastIndexOf('.')), out timeStamp))
+                        count++;
+                }
+                catch (Exception e)
+                {
+                    log(e.Message);
+                }
+            return count;
         }
 
         private void checkUpdateCurrentLogStream()
@@ -469,15 +502,13 @@ namespace Sensors
             }
             else if (nowStamp.CompareTo(openLogStreamStamp) != 0)
             {
-                string filePath = Path.Combine(Tools.APP_DIR, $"{nowStamp}.csv");
-
                 logStreamWriter.Flush();
                 logStreamWriter.Close();
 
                 openLogStreamStamp = nowStamp;
+                string filePath = Path.Combine(Tools.APP_DIR, $"{nowStamp}.csv");
                 logStreamWriter = new StreamWriter(path: filePath, append: false);
 
-                log(filePath);
                 log("New data-log file created");
             }
         }
@@ -517,6 +548,39 @@ namespace Sensors
                 default:
                     break;
             }
+        }
+
+        private void terminateFilesCounterThread()
+        {
+            stopFilesCounterThread = true;
+            filesCounterThread?.Join();
+            stopFilesCounterThread = false;
+        }
+
+        private void startFilesCounterThread()
+        {
+            filesCounterThread = new Thread(() =>
+            {
+                using (FileSystemWatcher watcher = new FileSystemWatcher(Tools.APP_DIR))
+                {
+                    filesCount = countSensorDataFiles();
+
+                    filesCountLabel.Text = $"FILES: {filesCount}";
+
+                    watcher.Filter = "*.csv";
+                    watcher.Deleted += (s, e) => { filesCountLabel.Text = $"FILES: {--filesCount}"; };
+                    watcher.Created += (s, e) => { filesCountLabel.Text = $"FILES: {++filesCount}"; };
+
+                    watcher.EnableRaisingEvents = true;
+                    while (!stopFilesCounterThread) ;
+
+                    watcher.EnableRaisingEvents = false;
+                }
+            });
+            filesCounterThread.IsBackground = true;
+            filesCounterThread.Start();
+
+            base.OnAppearing();
         }
     }
 }
