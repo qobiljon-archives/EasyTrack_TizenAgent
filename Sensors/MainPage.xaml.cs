@@ -9,6 +9,7 @@ using Tizen.Sensor;
 using Sensors.Model;
 using Tizen.Security;
 using System.Threading;
+using System.Collections.Generic;
 
 namespace Sensors
 {
@@ -18,23 +19,65 @@ namespace Sensors
         public Main()
         {
             InitializeComponent();
-            initByCheckingPrivileges();
-            // connect();
+
+            initDataSourcesWithPrivileges();
+            //initAgentConnection();
+            //startSubmitDataThread();
         }
 
         protected override void OnAppearing()
         {
             terminateFilesCounterThread();
             startFilesCounterThread();
+
+            base.OnAppearing();
         }
 
         protected override void OnDisappearing()
         {
             terminateFilesCounterThread();
+
             base.OnDisappearing();
         }
 
-        private void initEasyTrackTizenAgent()
+        private void initDataSourcesWithPrivileges()
+        {
+            PrivacyPrivilegeManager.ResponseContext context = null;
+            if (PrivacyPrivilegeManager.GetResponseContext(Tools.HEALTHINFO_PRIVILEGE).TryGetTarget(out context))
+                context.ResponseFetched += (s, e) =>
+                {
+                    if (e.result != RequestResult.AllowForever)
+                    {
+                        Toast.DisplayText("Please provide the necessary privileges for the application to run!");
+                        Environment.Exit(1);
+                    }
+                    else
+                        initDataSources();
+                };
+            else
+            {
+                Toast.DisplayText("Please provide the necessary privileges for the application to run!");
+                Environment.Exit(1);
+            }
+
+            switch (PrivacyPrivilegeManager.CheckPermission(Tools.HEALTHINFO_PRIVILEGE))
+            {
+                case CheckResult.Allow:
+                    initDataSources();
+                    break;
+                case CheckResult.Deny:
+                    Toast.DisplayText("Please provide the necessary privileges for the application to run!");
+                    Environment.Exit(1);
+                    break;
+                case CheckResult.Ask:
+                    PrivacyPrivilegeManager.RequestPermission(Tools.HEALTHINFO_PRIVILEGE);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void initDataSources()
         {
             #region Assign sensor model references
             accelerometerModel = new AccelerometerModel
@@ -214,11 +257,13 @@ namespace Sensors
         #region Variables
         // Log properties
         private Thread filesCounterThread;
+        private Thread submitDataThread;
         private string openLogStreamStamp;
         private StreamWriter logStreamWriter;
         private int logLinesCount = 1;
         private int filesCount;
         private bool stopFilesCounterThread;
+        private bool stopSubmitDataThread;
 
         // Connection properties
         private Agent agent;
@@ -257,7 +302,8 @@ namespace Sensors
         #region UI Event callbacks
         private void reportDataCollection(object sender, EventArgs e)
         {
-
+            terminateSubmitDataThread();
+            startSubmitDataThread();
         }
 
         private void startDataCollectionClick(object sender, EventArgs e)
@@ -420,23 +466,21 @@ namespace Sensors
         }
         #endregion
 
-        private void reportToETAgent(string message = default(string), string filename = default(string))
+        private void reportToETAgent(
+            string message = default(string),
+            string path = default(string),
+            EventHandler<FileTransferFinishedEventArgs> fileTransferFinishedHandler = default(EventHandler<FileTransferFinishedEventArgs>))
         {
             if (message != default(string))
             {
-                Channel chan = agent.Channels[Tools.CHANNEL_ID];
-                conn.Send(chan, Encoding.UTF8.GetBytes(message));
+                conn.Send(agent.Channels[Tools.CHANNEL_ID], Encoding.UTF8.GetBytes(message));
                 Debug.WriteLine(Tools.TAG, $"Message has been submitted on BLE. length={message.Length}");
             }
-            else if (filename != default(string))
+            else if (path != default(string))
             {
-                string path = Path.Combine(Tizen.Applications.Application.Current.DirectoryInfo.Resource, filename);
                 OutgoingFileTransfer oft = new OutgoingFileTransfer(peer, path);
                 oft.Send();
-                oft.Finished += (sender, evt) =>
-                {
-                    Debug.WriteLine(Tools.TAG, $"File has been submitted on BLE. Result => {evt.Result}");
-                };
+                oft.Finished += (s, e) => { Debug.WriteLine(Tools.TAG, $"File has been submitted on BLE. Result => {e.Result}"); };
             }
             log("Data uploaded");
         }
@@ -454,36 +498,13 @@ namespace Sensors
 
         private void eraseSensorData()
         {
-            long timeStamp;
-            foreach (string file in Directory.GetFiles(Tools.APP_DIR))
-                try
-                {
-                    string tmp = file.Substring(file.LastIndexOf('/') + 1);
-                    if (long.TryParse(tmp.Substring(0, tmp.LastIndexOf('.')), out timeStamp))
-                        File.Delete(file);
-                }
-                catch (Exception e)
-                {
-                    log(e.Message);
-                }
+            foreach (string file in Directory.GetFiles(Tools.APP_DIR, "*.csv"))
+                File.Delete(file);
         }
 
         private int countSensorDataFiles()
         {
-            int count = 0;
-            long timeStamp;
-            foreach (string file in Directory.GetFiles(Tools.APP_DIR))
-                try
-                {
-                    string tmp = file.Substring(file.LastIndexOf('/') + 1);
-                    if (long.TryParse(tmp.Substring(0, tmp.LastIndexOf('.')), out timeStamp))
-                        count++;
-                }
-                catch (Exception e)
-                {
-                    log(e.Message);
-                }
-            return count;
+            return Directory.GetFiles(Tools.APP_DIR, "*.csv").Length;
         }
 
         private void checkUpdateCurrentLogStream()
@@ -510,43 +531,6 @@ namespace Sensors
                 logStreamWriter = new StreamWriter(path: filePath, append: false);
 
                 log("New data-log file created");
-            }
-        }
-
-        private void initByCheckingPrivileges()
-        {
-            PrivacyPrivilegeManager.ResponseContext context = null;
-            if (PrivacyPrivilegeManager.GetResponseContext(Tools.HEALTHINFO_PRIVILEGE).TryGetTarget(out context))
-                context.ResponseFetched += (s, e) =>
-                {
-                    if (e.result != RequestResult.AllowForever)
-                    {
-                        Toast.DisplayText("Please provide the necessary privileges for the application to run!");
-                        Environment.Exit(1);
-                    }
-                    else
-                        initEasyTrackTizenAgent();
-                };
-            else
-            {
-                Toast.DisplayText("Please provide the necessary privileges for the application to run!");
-                Environment.Exit(1);
-            }
-
-            switch (PrivacyPrivilegeManager.CheckPermission(Tools.HEALTHINFO_PRIVILEGE))
-            {
-                case CheckResult.Allow:
-                    initEasyTrackTizenAgent();
-                    break;
-                case CheckResult.Deny:
-                    Toast.DisplayText("Please provide the necessary privileges for the application to run!");
-                    Environment.Exit(1);
-                    break;
-                case CheckResult.Ask:
-                    PrivacyPrivilegeManager.RequestPermission(Tools.HEALTHINFO_PRIVILEGE);
-                    break;
-                default:
-                    break;
             }
         }
 
@@ -579,8 +563,35 @@ namespace Sensors
             });
             filesCounterThread.IsBackground = true;
             filesCounterThread.Start();
+        }
 
-            base.OnAppearing();
+        private void terminateSubmitDataThread()
+        {
+            stopSubmitDataThread = true;
+            submitDataThread?.Join();
+            stopSubmitDataThread = false;
+        }
+
+        private void startSubmitDataThread()
+        {
+            submitDataThread = new Thread(() =>
+            {
+                string[] filePaths = Directory.GetFiles(Tools.APP_DIR, "*.csv");
+                List<long> fileNamesInLong = new List<long>();
+                for (int n = 0; !stopSubmitDataThread && n < filePaths.Length; n++)
+                {
+                    string tmp = filePaths[n].Substring(filePaths[n].LastIndexOf('/') + 1);
+                    fileNamesInLong.Add(long.Parse(tmp.Substring(0, tmp.LastIndexOf('.'))));
+                }
+                fileNamesInLong.Sort();
+                for (int n = 0; !stopSubmitDataThread && n < fileNamesInLong.Count - 1; n++)
+                {
+                    string filepath = Path.Combine(Tools.APP_DIR, $"{fileNamesInLong[n]}.csv");
+                    reportToETAgent(path: filepath);
+                }
+            });
+            submitDataThread.IsBackground = true;
+            submitDataThread.Start();
         }
     }
 }
