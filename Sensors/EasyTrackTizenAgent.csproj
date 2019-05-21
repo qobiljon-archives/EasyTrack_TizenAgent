@@ -14,9 +14,6 @@
     <None Remove="res\heart.png" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="lib\" />
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="Samsung.Sap" Version="1.0.0" />
     <PackageReference Include="SkiaSharp.HarfBuzz" Version="1.68.0" />
     <PackageReference Include="SkiaSharp.Views.Forms" Version="1.68.0" />
