@@ -37,4 +37,7 @@
       <Generator>MSBuild:Compile</Generator>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="lib\" />
+  </ItemGroup>
 </Project>
