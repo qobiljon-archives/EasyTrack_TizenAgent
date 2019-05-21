@@ -21,8 +21,15 @@ namespace Sensors
             InitializeComponent();
 
             initDataSourcesWithPrivileges();
-            //initAgentConnection();
-            //startSubmitDataThread();
+
+            try
+            {
+                initAgentConnection();
+            }
+            catch (Exception e)
+            {
+                log(e.Message);
+            }
         }
 
         protected override void OnAppearing()
@@ -588,6 +595,7 @@ namespace Sensors
                 {
                     string filepath = Path.Combine(Tools.APP_DIR, $"{fileNamesInLong[n]}.csv");
                     reportToETAgent(path: filepath);
+                    File.Delete(filepath);
                 }
             });
             submitDataThread.IsBackground = true;
