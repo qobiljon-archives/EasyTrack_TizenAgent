@@ -1,7 +1,6 @@
 ﻿using System;
 using Tizen.Wearable.CircularUI.Forms;
 using Xamarin.Forms.Xaml;
-using Samsung.Sap;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
@@ -10,13 +9,14 @@ using Sensors.Model;
 using Tizen.Security;
 using System.Threading;
 using System.Collections.Generic;
+using Samsung.Sap;
 
 namespace Sensors
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class Main : CirclePage
+    public partial class MainPage : CirclePage
     {
-        public Main()
+        public MainPage()
         {
             InitializeComponent();
 
@@ -240,24 +240,32 @@ namespace Sensors
         {
             agent = await Agent.GetAgent("/sample/hello", onConnect: (con) =>
             {
-                if (con.Peer.ProfileVersion == agent.ProfileVersion)
+                try
                 {
-                    con.DataReceived += (sender, evt) =>
+                    if (con.Peer.ProfileVersion == agent.ProfileVersion)
                     {
-                        if (evt.Channel.ID == Tools.CHANNEL_ID)
+                        con.DataReceived += (sender, evt) =>
                         {
-                            byte request = evt.Data[0];
+                            if (evt.Channel.ID == Tools.CHANNEL_ID)
+                            {
+                                byte request = evt.Data[0];
 
-                            if (request == Tools.REQUEST_DATA)
-                                reportDataCollection(reportDataColButton, new EventArgs());
-                        }
-                    };
-                    conn = con;
-                    peer = conn.Peer;
-                    return true;
+                                if (request == Tools.REQUEST_DATA)
+                                    reportDataCollection(reportDataColButton, new EventArgs());
+                            }
+                        };
+                        conn = con;
+                        peer = conn.Peer;
+                        return true;
+                    }
+                    else
+                        return false;
                 }
-                else
+                catch (Exception e)
+                {
+                    Toast.DisplayText(e.Message);
                     return false;
+                }
             });
         }
 
@@ -492,7 +500,7 @@ namespace Sensors
             log("Data uploaded");
         }
 
-        private void log(string message)
+        internal void log(string message)
         {
             if (logLinesCount == logLabel.MaxLines)
                 logLabel.Text = $"{logLabel.Text.Substring(logLabel.Text.IndexOf('\n') + 1)}\n{message}";

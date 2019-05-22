@@ -1,17 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <manifest package="kr.ac.inha.nsl.easytrack" version="1.0.0" api-version="4" xmlns="http://tizen.org/ns/packages">
-  <profile name="wearable" />
-  <ui-application appid="kr.ac.inha.nsl.easytrack" exec="EasyTrackTizenAgent.dll" multiple="false" nodisplay="false" taskmanage="true" type="dotnet" splash-screen-display="true" launch_mode="single">
-    <label>EasyTrack Tizen Agent</label>
-    <icon>icon.png</icon>
-    <metadata key="http://tizen.org/metadata/prefer_dotnet_aot" value="true" />
-    <metadata key="accessory-services-location" value="/res/xml/accessoryservices.xml" />
-    <splash-screens />
-  </ui-application>
-  <shortcut-list />
-  <privileges>
-    <privilege>http://tizen.org/privilege/healthinfo</privilege>
-    <privilege>http://developer.samsung.com/tizen/privilege/accessoryprotocol</privilege>
-  </privileges>
-  <provides-appdefined-privileges />
+    <profile name="wearable" />
+    <ui-application appid="kr.ac.inha.nsl.easytrack" exec="EasyTrackTizenAgent.dll" multiple="false" nodisplay="false" taskmanage="true" type="dotnet" splash-screen-display="true" launch_mode="single">
+        <label>EasyTrack Tizen Agent</label>
+        <icon>icon.png</icon>
+        <metadata key="http://tizen.org/metadata/prefer_dotnet_aot" value="true" />
+        <metadata key="AccessoryServicesLocation" value="/res/xml/accessoryservices.xml" />
+        <splash-screens />
+    </ui-application>
+    <shortcut-list />
+    <privileges>
+        <privilege>http://tizen.org/privilege/healthinfo</privilege>
+        <privilege>http://developer.samsung.com/tizen/privilege/accessoryprotocol</privilege>
+    </privileges>
+    <provides-appdefined-privileges />
 </manifest>

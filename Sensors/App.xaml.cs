@@ -10,7 +10,7 @@ namespace Sensors
         {
             InitializeComponent();
 
-            MainPage = new Main();
+            MainPage = new MainPage();
         }
 
         protected override void OnStart()
