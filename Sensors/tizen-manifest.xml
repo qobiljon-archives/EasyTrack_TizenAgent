@@ -12,6 +12,7 @@
     <privileges>
         <privilege>http://tizen.org/privilege/healthinfo</privilege>
         <privilege>http://developer.samsung.com/tizen/privilege/accessoryprotocol</privilege>
+        <privilege>http://tizen.org/privilege/internet</privilege>
     </privileges>
     <provides-appdefined-privileges />
 </manifest>

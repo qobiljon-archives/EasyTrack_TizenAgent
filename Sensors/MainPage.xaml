@@ -9,8 +9,8 @@
                     <ImageButton x:Name="stopDataColButton" IsEnabled="False" Clicked="stopDataCollectionClick" Source="stop.png" Margin="10,0,10,0"/>
                     <ImageButton x:Name="reportDataColButton" IsEnabled="True" Clicked="reportDataCollection" Source="upload.png" Margin="10,0,0,0"/>
                 </StackLayout>
-                <Label x:Name="logLabel" MaxLines="5" Text="LOG" FontSize="Micro" TextColor="LightGreen" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="#222" HorizontalTextAlignment="Center"/>
                 <Label x:Name="filesCountLabel" Text="FILES: 0" FontSize="Micro" TextColor="Orange" HorizontalOptions="Center"/>
+                <Label x:Name="logLabel" MaxLines="30" Text="LOG" FontSize="Micro" TextColor="LightGreen" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="#222" HorizontalTextAlignment="Center"/>
             </StackLayout>
         </c:CircleScrollView>
     </c:CirclePage.Content>

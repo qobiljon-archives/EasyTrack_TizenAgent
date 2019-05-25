@@ -17,10 +17,10 @@
     <PackageReference Include="Samsung.Sap" Version="1.0.0" />
     <PackageReference Include="SkiaSharp.HarfBuzz" Version="1.68.0" />
     <PackageReference Include="SkiaSharp.Views.Forms" Version="1.68.0" />
-    <PackageReference Include="Tizen.NET" Version="6.0.0.14787">
+    <PackageReference Include="System.Json" Version="4.5.0" />
+    <PackageReference Include="Tizen.NET" Version="4.0.1.14157">
       <ExcludeAssets>Runtime</ExcludeAssets>
     </PackageReference>
-    <PackageReference Include="Tizen.NET.API4" Version="4.0.1.14157" />
     <PackageReference Include="Tizen.NET.Sdk" Version="1.0.1" />
     <PackageReference Include="Tizen.Wearable.CircularUI" Version="1.2.0" />
     <PackageReference Include="Xamarin.Forms" Version="3.6.0.344457" />
@@ -29,6 +29,10 @@
   <ItemGroup>
     <EmbeddedResource Update="App.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
@@ -45,6 +49,11 @@
   <ItemGroup>
     <Compile Update="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
   </ItemGroup>
 </Project>
