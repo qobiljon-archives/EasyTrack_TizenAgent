@@ -49,6 +49,7 @@ namespace Sensors
             base.OnDisappearing();
         }
 
+
         private void initDataSourcesWithPrivileges()
         {
             PrivacyPrivilegeManager.ResponseContext context = null;
@@ -371,7 +372,10 @@ namespace Sensors
         {
             checkUpdateCurrentLogStream();
             logStreamWriter?.Flush();
-            logStreamWriter?.WriteLine($"{DateTime.Now.Ticks},{Tools.ACCELEROMETER},{e.X},{e.Y},{e.Z}");
+            lock (logStreamWriter)
+            {
+                logStreamWriter?.WriteLine($"tizen,{DateTime.Now.Ticks},{Tools.ACCELEROMETER},{e.X},{e.Y},{e.Z}");
+            }
         }
         private void storeGravitySensorDataCallback(object sender, GravitySensorDataUpdatedEventArgs e)
         {
@@ -379,7 +383,7 @@ namespace Sensors
             logStreamWriter.Flush();
             lock (logStreamWriter)
             {
-                logStreamWriter?.WriteLine($"{DateTime.Now.Ticks},{Tools.GRAVITY},{e.X},{e.Y},{e.Z}");
+                logStreamWriter?.WriteLine($"tizen,{DateTime.Now.Ticks},{Tools.GRAVITY},{e.X},{e.Y},{e.Z}");
             }
         }
         private void storeGyroscopeDataCallback(object sender, GyroscopeDataUpdatedEventArgs e)
@@ -388,7 +392,7 @@ namespace Sensors
             logStreamWriter.Flush();
             lock (logStreamWriter)
             {
-                logStreamWriter?.WriteLine($"{DateTime.Now.Ticks},{Tools.GYROSCOPE},{e.X},{e.Y},{e.Z}");
+                logStreamWriter?.WriteLine($"tizen,{DateTime.Now.Ticks},{Tools.GYROSCOPE},{e.X},{e.Y},{e.Z}");
             }
         }
         private void storeHeartRateMonitorDataCallback(object sender, HeartRateMonitorDataUpdatedEventArgs e)
@@ -397,7 +401,7 @@ namespace Sensors
             logStreamWriter.Flush();
             lock (logStreamWriter)
             {
-                logStreamWriter?.WriteLine($"{DateTime.Now.Ticks},{Tools.HRM},{e.HeartRate}");
+                logStreamWriter?.WriteLine($"tizen,{DateTime.Now.Ticks},{Tools.HRM},{e.HeartRate}");
             }
         }
         private void storeHumiditySensorDataCallback(object sender, HumiditySensorDataUpdatedEventArgs e)
@@ -406,7 +410,7 @@ namespace Sensors
             logStreamWriter.Flush();
             lock (logStreamWriter)
             {
-                logStreamWriter?.WriteLine($"{DateTime.Now.Ticks},{Tools.HUMIDITY},{e.Humidity}");
+                logStreamWriter?.WriteLine($"tizen,{DateTime.Now.Ticks},{Tools.HUMIDITY},{e.Humidity}");
             }
         }
         private void storeLightSensorDataCallback(object sender, LightSensorDataUpdatedEventArgs e)
@@ -415,7 +419,7 @@ namespace Sensors
             logStreamWriter.Flush();
             lock (logStreamWriter)
             {
-                logStreamWriter?.WriteLine($"{DateTime.Now.Ticks},{Tools.LIGHT},{e.Level}");
+                logStreamWriter?.WriteLine($"tizen,{DateTime.Now.Ticks},{Tools.LIGHT},{e.Level}");
             }
         }
         private void storeLinearAccelerationSensorDataCallback(object sender, LinearAccelerationSensorDataUpdatedEventArgs e)
@@ -424,7 +428,7 @@ namespace Sensors
             logStreamWriter.Flush();
             lock (logStreamWriter)
             {
-                logStreamWriter?.WriteLine($"{DateTime.Now.Ticks},{Tools.LINEARACCELERATION},{e.X},{e.Y},{e.Z}");
+                logStreamWriter?.WriteLine($"tizen,{DateTime.Now.Ticks},{Tools.LINEARACCELERATION},{e.X},{e.Y},{e.Z}");
             }
         }
         private void storeMagnetometerDataCallback(object sender, MagnetometerDataUpdatedEventArgs e)
@@ -433,7 +437,7 @@ namespace Sensors
             logStreamWriter.Flush();
             lock (logStreamWriter)
             {
-                logStreamWriter?.WriteLine($"{DateTime.Now.Ticks},{Tools.MAGNETOMETER},{e.X},{e.Y},{e.Z}");
+                logStreamWriter?.WriteLine($"tizen,{DateTime.Now.Ticks},{Tools.MAGNETOMETER},{e.X},{e.Y},{e.Z}");
             }
         }
         private void storeOrientationSensorDataCallback(object sender, OrientationSensorDataUpdatedEventArgs e)
@@ -442,7 +446,7 @@ namespace Sensors
             logStreamWriter.Flush();
             lock (logStreamWriter)
             {
-                logStreamWriter?.WriteLine($"{DateTime.Now.Ticks},{Tools.ORIENTATION},{e.Azimuth}, {e.Pitch}, {e.Roll}");
+                logStreamWriter?.WriteLine($"tizen,{DateTime.Now.Ticks},{Tools.ORIENTATION},{e.Azimuth}, {e.Pitch}, {e.Roll}");
             }
         }
         private void storePressureSensorDataCallback(object sender, PressureSensorDataUpdatedEventArgs e)
@@ -451,7 +455,7 @@ namespace Sensors
             logStreamWriter.Flush();
             lock (logStreamWriter)
             {
-                logStreamWriter?.WriteLine($"{DateTime.Now.Ticks},{Tools.PRESSURE},{e.Pressure}");
+                logStreamWriter?.WriteLine($"tizen,{DateTime.Now.Ticks},{Tools.PRESSURE},{e.Pressure}");
             }
         }
         private void storeProximitySensorDataCallback(object sender, ProximitySensorDataUpdatedEventArgs e)
@@ -460,7 +464,7 @@ namespace Sensors
             logStreamWriter.Flush();
             lock (logStreamWriter)
             {
-                logStreamWriter?.WriteLine($"{DateTime.Now.Ticks},{Tools.PROXIMITY},{e.Proximity}");
+                logStreamWriter?.WriteLine($"tizen,{DateTime.Now.Ticks},{Tools.PROXIMITY},{e.Proximity}");
             }
         }
         private void storeTemperatureSensorDataCallback(object sender, TemperatureSensorDataUpdatedEventArgs e)
@@ -469,7 +473,7 @@ namespace Sensors
             logStreamWriter.Flush();
             lock (logStreamWriter)
             {
-                logStreamWriter?.WriteLine($"{DateTime.Now.Ticks},{Tools.TEMPERATURE},{e.Temperature}");
+                logStreamWriter?.WriteLine($"tizen,{DateTime.Now.Ticks},{Tools.TEMPERATURE},{e.Temperature}");
             }
         }
         private void storeUltravioletSensorDataCallback(object sender, UltravioletSensorDataUpdatedEventArgs e)
@@ -478,129 +482,12 @@ namespace Sensors
             logStreamWriter.Flush();
             lock (logStreamWriter)
             {
-                logStreamWriter?.WriteLine($"{DateTime.Now.Ticks},{Tools.ULTRAVIOLET},{e.UltravioletIndex}");
+                logStreamWriter?.WriteLine($"tizen,{DateTime.Now.Ticks},{Tools.ULTRAVIOLET},{e.UltravioletIndex}");
             }
         }
         #endregion
 
-
-        private void reportToETAgent(
-            string message = default(string),
-            string path = default(string),
-            EventHandler<FileTransferFinishedEventArgs> fileTransferFinishedHandler = null)
-        {
-            if (message != default(string))
-            {
-
-                Debug.WriteLine(Tools.TAG, $"Message has been submitted on BLE. length={message.Length}");
-            }
-            else if (path != default(string))
-            {
-                OutgoingFileTransfer oft = new OutgoingFileTransfer(peer, path);
-                oft.Send();
-                if (fileTransferFinishedHandler == null)
-                    oft.Finished += (s, e) => { Debug.WriteLine(Tools.TAG, $"File has been submitted on BLE. Result => {e.Result}"); };
-                else
-                    oft.Finished += fileTransferFinishedHandler;
-            }
-            log("Data uploaded on Server");
-        }
-
-        private async Task reportToApiServer(
-            string message = default(string),
-            string path = default(string),
-            Task postTransferTask = null)
-        {
-            if (message != default(string))
-            {
-                HttpResponseMessage result = await Tools.post(Tools.API_NOTIFY, new Dictionary<string, string> {
-                    { "username", "test@test.com" },
-                    { "password", "123456" },
-                    { "message", message }
-                });
-                if (result.IsSuccessStatusCode)
-                {
-                    JsonValue resJson = JsonValue.Parse(await result.Content.ReadAsStringAsync());
-                    log($"RESULT: {resJson["result"]}");
-                    Debug.WriteLine(Tools.TAG, $"Message has been submitted to the Server. length={message.Length}");
-                }
-                else
-                    Toast.DisplayText("Failed to submit a notification to server!");
-            }
-            else if (path != default(string))
-            {
-                HttpResponseMessage result = await Tools.post(
-                    Tools.API_SUBMIT_DATA,
-                    new Dictionary<string, string>
-                    {
-                        {"username", "test@test.com"},
-                        {"password", "123456"},
-                    },
-                    File.ReadAllBytes(path)
-                );
-                if (result.IsSuccessStatusCode)
-                {
-                    JsonValue resJson = JsonValue.Parse(await result.Content.ReadAsStringAsync());
-                    log($"RESULT: {resJson["result"]}");
-                    postTransferTask?.Start();
-                }
-                else
-                    Toast.DisplayText("Failed to submit data to server!");
-            }
-            log("Data uploaded on Server");
-        }
-
-
-
-        internal void log(string message)
-        {
-            if (logLinesCount == logLabel.MaxLines)
-                logLabel.Text = $"{logLabel.Text.Substring(logLabel.Text.IndexOf('\n') + 1)}\n{message}";
-            else
-            {
-                logLabel.Text = $"{logLabel.Text}\n{message}";
-                logLinesCount++;
-            }
-        }
-
-        private void eraseSensorData()
-        {
-            foreach (string file in Directory.GetFiles(Tools.APP_DIR, "*.csv"))
-                File.Delete(file);
-        }
-
-        private int countSensorDataFiles()
-        {
-            return Directory.GetFiles(Tools.APP_DIR, "*.csv").Length;
-        }
-
-        private void checkUpdateCurrentLogStream()
-        {
-            DateTime nowTimestamp = DateTime.Now;
-            nowTimestamp = new DateTime(year: nowTimestamp.Year, month: nowTimestamp.Month, day: nowTimestamp.Day, hour: nowTimestamp.Hour, minute: nowTimestamp.Minute, second: 0);
-            string nowStamp = $"{nowTimestamp.Ticks / 100000000}";
-
-            if (logStreamWriter == default(StreamWriter))
-            {
-                openLogStreamStamp = nowStamp;
-                string filePath = Path.Combine(Tools.APP_DIR, $"{nowStamp}.csv");
-                logStreamWriter = new StreamWriter(path: filePath, append: true);
-
-                log("Data-log file created/attached");
-            }
-            else if (nowStamp.CompareTo(openLogStreamStamp) != 0)
-            {
-                logStreamWriter.Flush();
-                logStreamWriter.Close();
-
-                openLogStreamStamp = nowStamp;
-                string filePath = Path.Combine(Tools.APP_DIR, $"{nowStamp}.csv");
-                logStreamWriter = new StreamWriter(path: filePath, append: false);
-
-                log("New data-log file created");
-            }
-        }
-
+        #region Thread start/stop methods
         private void terminateFilesCounterThread()
         {
             stopFilesCounterThread = true;
@@ -673,6 +560,125 @@ namespace Sensors
             });
             submitDataThread.IsBackground = true;
             submitDataThread.Start();
+        }
+        #endregion
+
+
+        private void reportToETAgent(
+            string message = default(string),
+            string path = default(string),
+            EventHandler<FileTransferFinishedEventArgs> fileTransferFinishedHandler = null)
+        {
+            if (message != default(string))
+            {
+
+                Debug.WriteLine(Tools.TAG, $"Message has been submitted on BLE. length={message.Length}");
+            }
+            else if (path != default(string))
+            {
+                OutgoingFileTransfer oft = new OutgoingFileTransfer(peer, path);
+                oft.Send();
+                if (fileTransferFinishedHandler == null)
+                    oft.Finished += (s, e) => { Debug.WriteLine(Tools.TAG, $"File has been submitted on BLE. Result => {e.Result}"); };
+                else
+                    oft.Finished += fileTransferFinishedHandler;
+            }
+            log("Data uploaded on Server");
+        }
+
+        private async Task reportToApiServer(
+            string message = default(string),
+            string path = default(string),
+            Task postTransferTask = null)
+        {
+            if (message != default(string))
+            {
+                HttpResponseMessage result = await Tools.post(Tools.API_NOTIFY, new Dictionary<string, string> {
+                    { "username", "test" },
+                    { "password", "0123456789" },
+                    { "message", message }
+                });
+                if (result.IsSuccessStatusCode)
+                {
+                    JsonValue resJson = JsonValue.Parse(await result.Content.ReadAsStringAsync());
+                    log($"RESULT: {resJson["result"]}");
+                    Debug.WriteLine(Tools.TAG, $"Message has been submitted to the Server. length={message.Length}");
+                }
+                else
+                    Toast.DisplayText("Failed to submit a notification to server!");
+            }
+            else if (path != default(string))
+            {
+                HttpResponseMessage result = await Tools.post(
+                    Tools.API_SUBMIT_DATA,
+                    new Dictionary<string, string>
+                    {
+                        {"username", "test"},
+                        {"password", "0123456789"},
+                    },
+                    File.ReadAllBytes(path)
+                );
+                if (result.IsSuccessStatusCode)
+                {
+                    JsonValue resJson = JsonValue.Parse(await result.Content.ReadAsStringAsync());
+                    log($"RESULT: {resJson["result"]}");
+                    postTransferTask?.Start();
+                }
+                else
+                    Toast.DisplayText("Failed to submit data to server!");
+            }
+            log("Data uploaded on Server");
+        }
+
+
+
+        internal void log(string message)
+        {
+            if (logLinesCount == logLabel.MaxLines)
+                logLabel.Text = $"{logLabel.Text.Substring(logLabel.Text.IndexOf('\n') + 1)}\n{message}";
+            else
+            {
+                logLabel.Text = $"{logLabel.Text}\n{message}";
+                logLinesCount++;
+            }
+        }
+
+        private void eraseSensorData()
+        {
+            foreach (string file in Directory.GetFiles(Tools.APP_DIR, "*.csv"))
+                File.Delete(file);
+        }
+
+        private int countSensorDataFiles()
+        {
+            return Directory.GetFiles(Tools.APP_DIR, "*.csv").Length;
+        }
+
+        private void checkUpdateCurrentLogStream()
+        {
+            DateTime nowTimestamp = DateTime.Now;
+            nowTimestamp = new DateTime(year: nowTimestamp.Year, month: nowTimestamp.Month, day: nowTimestamp.Day, hour: nowTimestamp.Hour, minute: nowTimestamp.Minute, second: 0);
+            string nowStamp = $"{nowTimestamp.Ticks / 100000000}";
+
+            if (logStreamWriter == default(StreamWriter))
+            {
+                openLogStreamStamp = nowStamp;
+                string filePath = Path.Combine(Tools.APP_DIR, $"{nowStamp}.csv");
+                logStreamWriter = new StreamWriter(path: filePath, append: true);
+
+                log("Data-log file created/attached");
+            }
+            else if (nowStamp.CompareTo(openLogStreamStamp) != 0)
+            {
+                logStreamWriter.Flush();
+                logStreamWriter.Close();
+
+                openLogStreamStamp = nowStamp;
+                string filePath = Path.Combine(Tools.APP_DIR, $"{nowStamp}.csv");
+                logStreamWriter = new StreamWriter(path: filePath, append: false);
+
+                log("New data-log file created");
+            }
         }
     }
 }

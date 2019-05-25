@@ -10,7 +10,7 @@
                     <ImageButton x:Name="reportDataColButton" IsEnabled="True" Clicked="reportDataCollection" Source="upload.png" Margin="10,0,0,0"/>
                 </StackLayout>
                 <Label x:Name="filesCountLabel" Text="FILES: 0" FontSize="Micro" TextColor="Orange" HorizontalOptions="Center"/>
-                <Label x:Name="logLabel" MaxLines="30" Text="LOG" FontSize="Micro" TextColor="LightGreen" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="#222" HorizontalTextAlignment="Center"/>
+                <Label x:Name="logLabel" MaxLines="30" Text="LOG" FontSize="Micro" TextColor="LightGreen" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="#222" HorizontalTextAlignment="Center" Margin="0,0,0,100"/>
             </StackLayout>
         </c:CircleScrollView>
     </c:CirclePage.Content>
