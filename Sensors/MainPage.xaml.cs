@@ -371,7 +371,7 @@ namespace Sensors
             logStreamWriter.Flush();
             lock (logStreamWriter)
             {
-                logStreamWriter.WriteLine($"wearable-tizen,{DateTime.Now.Ticks},{Tools.GRAVITY},GravitySensor,{e.X},{e.Y},{e.Z}");
+                logStreamWriter.WriteLine($"wearable-tizen,{DateTime.Now.Ticks},{Tools.GRAVITY},GravitySensor,-1,{e.X},{e.Y},{e.Z}");
             }
         }
         private void storeGyroscopeDataCallback(object sender, GyroscopeDataUpdatedEventArgs e)
@@ -380,7 +380,7 @@ namespace Sensors
             logStreamWriter.Flush();
             lock (logStreamWriter)
             {
-                logStreamWriter.WriteLine($"wearable-tizen,{DateTime.Now.Ticks},{Tools.GYROSCOPE},Gyroscope,{e.X},{e.Y},{e.Z}");
+                logStreamWriter.WriteLine($"wearable-tizen,{DateTime.Now.Ticks},{Tools.GYROSCOPE},Gyroscope,-1,{e.X},{e.Y},{e.Z}");
             }
         }
         private void storeHeartRateMonitorDataCallback(object sender, HeartRateMonitorDataUpdatedEventArgs e)
@@ -389,7 +389,7 @@ namespace Sensors
             logStreamWriter.Flush();
             lock (logStreamWriter)
             {
-                logStreamWriter.WriteLine($"wearable-tizen,{DateTime.Now.Ticks},{Tools.HRM},HeartRateMonitor,{e.HeartRate}");
+                logStreamWriter.WriteLine($"wearable-tizen,{DateTime.Now.Ticks},{Tools.HRM},HeartRateMonitor,-1,{e.HeartRate}");
             }
         }
         private void storeHumiditySensorDataCallback(object sender, HumiditySensorDataUpdatedEventArgs e)
@@ -398,7 +398,7 @@ namespace Sensors
             logStreamWriter.Flush();
             lock (logStreamWriter)
             {
-                logStreamWriter.WriteLine($"wearable-tizen,{DateTime.Now.Ticks},{Tools.HUMIDITY},HumiditySensor,{e.Humidity}");
+                logStreamWriter.WriteLine($"wearable-tizen,{DateTime.Now.Ticks},{Tools.HUMIDITY},HumiditySensor,-1,{e.Humidity}");
             }
         }
         private void storeLightSensorDataCallback(object sender, LightSensorDataUpdatedEventArgs e)
@@ -407,7 +407,7 @@ namespace Sensors
             logStreamWriter.Flush();
             lock (logStreamWriter)
             {
-                logStreamWriter.WriteLine($"wearable-tizen,{DateTime.Now.Ticks},{Tools.LIGHT},LightSensor,{e.Level}");
+                logStreamWriter.WriteLine($"wearable-tizen,{DateTime.Now.Ticks},{Tools.LIGHT},LightSensor,-1,{e.Level}");
             }
         }
         private void storeLinearAccelerationSensorDataCallback(object sender, LinearAccelerationSensorDataUpdatedEventArgs e)
@@ -416,7 +416,7 @@ namespace Sensors
             logStreamWriter.Flush();
             lock (logStreamWriter)
             {
-                logStreamWriter.WriteLine($"wearable-tizen,{DateTime.Now.Ticks},{Tools.LINEARACCELERATION},LinearAccelerationSensor,{e.X},{e.Y},{e.Z}");
+                logStreamWriter.WriteLine($"wearable-tizen,{DateTime.Now.Ticks},{Tools.LINEARACCELERATION},LinearAccelerationSensor,-1,{e.X},{e.Y},{e.Z}");
             }
         }
         private void storeMagnetometerDataCallback(object sender, MagnetometerDataUpdatedEventArgs e)
@@ -425,7 +425,7 @@ namespace Sensors
             logStreamWriter.Flush();
             lock (logStreamWriter)
             {
-                logStreamWriter.WriteLine($"wearable-tizen,{DateTime.Now.Ticks},{Tools.MAGNETOMETER},Magnetometer,{e.X},{e.Y},{e.Z}");
+                logStreamWriter.WriteLine($"wearable-tizen,{DateTime.Now.Ticks},{Tools.MAGNETOMETER},Magnetometer,-1,{e.X},{e.Y},{e.Z}");
             }
         }
         private void storeOrientationSensorDataCallback(object sender, OrientationSensorDataUpdatedEventArgs e)
@@ -434,7 +434,7 @@ namespace Sensors
             logStreamWriter.Flush();
             lock (logStreamWriter)
             {
-                logStreamWriter.WriteLine($"wearable-tizen,{DateTime.Now.Ticks},{Tools.ORIENTATION},OrientationSensor,{e.Azimuth}, {e.Pitch}, {e.Roll}");
+                logStreamWriter.WriteLine($"wearable-tizen,{DateTime.Now.Ticks},{Tools.ORIENTATION},OrientationSensor,-1,{e.Azimuth}, {e.Pitch}, {e.Roll}");
             }
         }
         private void storePressureSensorDataCallback(object sender, PressureSensorDataUpdatedEventArgs e)
@@ -443,7 +443,7 @@ namespace Sensors
             logStreamWriter.Flush();
             lock (logStreamWriter)
             {
-                logStreamWriter.WriteLine($"wearable-tizen,{DateTime.Now.Ticks},{Tools.PRESSURE},PressureSensor,{e.Pressure}");
+                logStreamWriter.WriteLine($"wearable-tizen,{DateTime.Now.Ticks},{Tools.PRESSURE},PressureSensor,-1,{e.Pressure}");
             }
         }
         private void storeProximitySensorDataCallback(object sender, ProximitySensorDataUpdatedEventArgs e)
@@ -452,7 +452,7 @@ namespace Sensors
             logStreamWriter.Flush();
             lock (logStreamWriter)
             {
-                logStreamWriter.WriteLine($"wearable-tizen,{DateTime.Now.Ticks},{Tools.PROXIMITY},ProximitySensor,{e.Proximity}");
+                logStreamWriter.WriteLine($"wearable-tizen,{DateTime.Now.Ticks},{Tools.PROXIMITY},ProximitySensor,-1,{e.Proximity}");
             }
         }
         private void storeTemperatureSensorDataCallback(object sender, TemperatureSensorDataUpdatedEventArgs e)
@@ -461,7 +461,7 @@ namespace Sensors
             logStreamWriter.Flush();
             lock (logStreamWriter)
             {
-                logStreamWriter.WriteLine($"wearable-tizen,{DateTime.Now.Ticks},{Tools.TEMPERATURE},TemperatureSensor,{e.Temperature}");
+                logStreamWriter.WriteLine($"wearable-tizen,{DateTime.Now.Ticks},{Tools.TEMPERATURE},TemperatureSensor,-1,{e.Temperature}");
             }
         }
         private void storeUltravioletSensorDataCallback(object sender, UltravioletSensorDataUpdatedEventArgs e)
@@ -470,7 +470,7 @@ namespace Sensors
             logStreamWriter.Flush();
             lock (logStreamWriter)
             {
-                logStreamWriter.WriteLine($"wearable-tizen,{DateTime.Now.Ticks},{Tools.ULTRAVIOLET},UltravioletSensor,{e.UltravioletIndex}");
+                logStreamWriter.WriteLine($"wearable-tizen,{DateTime.Now.Ticks},{Tools.ULTRAVIOLET},UltravioletSensor,-1,{e.UltravioletIndex}");
             }
         }
         #endregion
@@ -522,7 +522,7 @@ namespace Sensors
             nowTimestamp = new DateTime(year: nowTimestamp.Year, month: nowTimestamp.Month, day: nowTimestamp.Day, hour: nowTimestamp.Hour, minute: nowTimestamp.Minute, second: 0);
             string nowStamp = $"{nowTimestamp.Ticks / 100000000}";
 
-            if (logStreamWriter == default(StreamWriter))
+            if (logStreamWriter == null)
             {
                 openLogStreamStamp = nowStamp;
                 string filePath = Path.Combine(Tools.APP_DIR, $"{nowStamp}.csv");
@@ -530,7 +530,7 @@ namespace Sensors
 
                 log("Data-log file created/attached");
             }
-            else if (nowStamp.CompareTo(openLogStreamStamp) != 0)
+            else if (!nowStamp.Equals(openLogStreamStamp))
             {
                 logStreamWriter.Flush();
                 logStreamWriter.Close();
