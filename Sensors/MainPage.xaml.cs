@@ -514,8 +514,8 @@ namespace Sensors
             if (message != default(string))
             {
                 HttpResponseMessage result = await Tools.post(Tools.API_NOTIFY, new Dictionary<string, string> {
-                    { "username", "test@test.com" },
-                    { "password", "123456" },
+                    { "username", "test" },
+                    { "password", "0123456789" },
                     { "message", message }
                 });
                 if (result.IsSuccessStatusCode)
@@ -533,8 +533,8 @@ namespace Sensors
                     Tools.API_SUBMIT_DATA,
                     new Dictionary<string, string>
                     {
-                        {"username", "test@test.com"},
-                        {"password", "123456"},
+                        {"username", "test"},
+                        {"password", "0123456789"},
                     },
                     File.ReadAllBytes(path)
                 );
