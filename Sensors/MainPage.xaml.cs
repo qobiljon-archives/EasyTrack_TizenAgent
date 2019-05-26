@@ -487,7 +487,7 @@ namespace Sensors
         private void reportToETAgent(
             string message = default(string),
             string path = default(string),
-            EventHandler<FileTransferFinishedEventArgs> fileTransferFinishedHandler = default(EventHandler<FileTransferFinishedEventArgs>))
+            EventHandler<FileTransferFinishedEventArgs> fileTransferFinishedHandler = null)
         {
             if (message != default(string))
             {
@@ -498,7 +498,10 @@ namespace Sensors
             {
                 OutgoingFileTransfer oft = new OutgoingFileTransfer(peer, path);
                 oft.Send();
-                oft.Finished += (s, e) => { Debug.WriteLine(Tools.TAG, $"File has been submitted on BLE. Result => {e.Result}"); };
+                if (fileTransferFinishedHandler == null)
+                    oft.Finished += (s, e) => { Debug.WriteLine(Tools.TAG, $"File has been submitted on BLE. Result => {e.Result}"); };
+                else
+                    oft.Finished += fileTransferFinishedHandler;
             }
             log("Data uploaded");
         }
@@ -636,8 +639,9 @@ namespace Sensors
 
         private void startSubmitDataThread()
         {
-            submitDataThread = new Thread(() =>
+            submitDataThread = new Thread(async () =>
             {
+                // Get list of files and sort in increasing order
                 string[] filePaths = Directory.GetFiles(Tools.APP_DIR, "*.csv");
                 List<long> fileNamesInLong = new List<long>();
                 for (int n = 0; !stopSubmitDataThread && n < filePaths.Length; n++)
@@ -646,10 +650,12 @@ namespace Sensors
                     fileNamesInLong.Add(long.Parse(tmp.Substring(0, tmp.LastIndexOf('.'))));
                 }
                 fileNamesInLong.Sort();
+
+                // Submit files to server except the last file
                 for (int n = 0; !stopSubmitDataThread && n < fileNamesInLong.Count - 1; n++)
                 {
                     string filepath = Path.Combine(Tools.APP_DIR, $"{fileNamesInLong[n]}.csv");
-                    reportToETAgent(path: filepath);
+                    await reportToApiServer(path: filepath);
                     File.Delete(filepath);
                 }
             });
