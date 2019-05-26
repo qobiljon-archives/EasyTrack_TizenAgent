@@ -513,7 +513,7 @@ namespace Sensors
         {
             if (message != default(string))
             {
-                HttpResponseMessage result = await Tools.post(Tools.API_NOTIFY, new Dictionary<string, string> {
+                HttpResponseMessage result = await Tools.post(Tools.API_SUBMIT_HEARTBEAT, new Dictionary<string, string> {
                     { "username", "test" },
                     { "password", "0123456789" },
                     { "message", message }
@@ -527,7 +527,7 @@ namespace Sensors
                 else
                     Toast.DisplayText("Failed to submit a notification to server!");
             }
-            else if (path != default(string))
+            else if (path != null)
             {
                 HttpResponseMessage result = await Tools.post(
                     Tools.API_SUBMIT_DATA,
@@ -538,16 +538,23 @@ namespace Sensors
                     },
                     File.ReadAllBytes(path)
                 );
+                if (result == null)
+                {
+                    Toast.DisplayText("Please check your WiFi connection first!");
+                    return;
+                }
                 if (result.IsSuccessStatusCode)
                 {
                     JsonValue resJson = JsonValue.Parse(await result.Content.ReadAsStringAsync());
-                    log($"RESULT: {resJson["result"]}");
-                    postTransferTask?.Start();
+                    ServerResult resCode = (ServerResult)int.Parse(resJson["result"].ToString());
+                    if (resCode == ServerResult.OK)
+                        postTransferTask?.Start();
+                    else
+                        log($"Failed to upload {path.Substring(path.LastIndexOf(Path.PathSeparator) + 1)}");
                 }
                 else
-                    Toast.DisplayText("Failed to submit data to server!");
+                    log($"Failed to upload {path.Substring(path.LastIndexOf(Path.PathSeparator) + 1)}");
             }
-            log("Data uploaded on Server");
         }
 
         internal void log(string message)
@@ -652,12 +659,16 @@ namespace Sensors
                 fileNamesInLong.Sort();
 
                 // Submit files to server except the last file
+                terminateFilesCounterThread();
                 for (int n = 0; !stopSubmitDataThread && n < fileNamesInLong.Count - 1; n++)
                 {
+                    filesCountLabel.Text = $"{(n + 1) * 100 / fileNamesInLong.Count}% UPLOADED";
                     string filepath = Path.Combine(Tools.APP_DIR, $"{fileNamesInLong[n]}.csv");
-                    await reportToApiServer(path: filepath);
-                    File.Delete(filepath);
+                    await reportToApiServer(path: filepath, postTransferTask: new Task(() => { File.Delete(filepath); }));
                 }
+                filesCountLabel.Text = $"100% UPLOADED";
+                Thread.Sleep(300);
+                startFilesCounterThread();
             });
             submitDataThread.IsBackground = true;
             submitDataThread.Start();

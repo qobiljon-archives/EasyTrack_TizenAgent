@@ -12,7 +12,7 @@ namespace Sensors
         // Common constants
         internal const string TAG = "EasyTrack";
         internal const ushort CHANNEL_ID = 104;
-        internal const ushort SENSOR_SAMPLING_INTERVAL = 1000; // milliseconds
+        internal const uint SENSOR_SAMPLING_INTERVAL = 1000; // milliseconds
         internal const string HEALTHINFO_PRIVILEGE = "http://tizen.org/privilege/healthinfo";
         // API constants
         internal const string API_REGISTER = "register";
@@ -21,18 +21,7 @@ namespace Sensors
         internal const string API_SUBMIT_HEARTBEAT = "heartbeat";
         internal const string API_SUBMIT_DATA = "submit_data";
         internal const string API_NOTIFY = "notify";
-        // Result codes from server
-        enum ServerResult
-        {
-            OK = 0,
-            FAIL = 1,
-            BAD_JSON_PARAMETERS = 2,
-            USERNAME_TAKEN = 3,
-            TOO_SHORT_PASSWORD = 4,
-            TOO_LONG_PASSWORD = 5,
-            USER_DOES_NOT_EXIST = 6,
-            BAD_PASSWORD = 7
-        }
+
 
         // Actions
         public const byte REQUEST_DATA = 0x01;
@@ -71,5 +60,18 @@ namespace Sensors
                     return await client.PostAsync($"{SERVER_URL}/{api}", formData);
                 }
         }
+    }
+
+    // Result codes from server
+    enum ServerResult
+    {
+        OK = 0,
+        FAIL = 1,
+        BAD_JSON_PARAMETERS = 2,
+        USERNAME_TAKEN = 3,
+        TOO_SHORT_PASSWORD = 4,
+        TOO_LONG_PASSWORD = 5,
+        USER_DOES_NOT_EXIST = 6,
+        BAD_PASSWORD = 7
     }
 }
