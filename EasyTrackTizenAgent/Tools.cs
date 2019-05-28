@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace EasyTrackTizenAgent
@@ -59,6 +60,18 @@ namespace EasyTrackTizenAgent
                     formData.Add(bytesContent, "file", "file");
                     return await client.PostAsync($"{SERVER_URL}/{api}", formData);
                 }
+        }
+        
+        internal static void sendHeartBeatMessage()
+        {
+            new Thread(async () =>
+            {
+                await post(API_SUBMIT_HEARTBEAT, new Dictionary<string, string>
+                {
+                    { "username", Tizen.Applications.Preference.Get<string>("username") },
+                    { "password", Tizen.Applications.Preference.Get<string>("password") }
+                });
+            }).Start();
         }
     }
 
