@@ -17,7 +17,7 @@ namespace EasyTrackTizenAgent
         // API constants
         internal const string API_REGISTER = "register";
         internal const string API_UNREGISTER = "unregister";
-        internal const string API_AUTHENTICATE = "authenticate";
+        internal const string API_AUTHENTICATE = "user/login";
         internal const string API_SUBMIT_HEARTBEAT = "heartbeat";
         internal const string API_SUBMIT_DATA = "submit_data";
         internal const string API_NOTIFY = "notify";
@@ -43,8 +43,8 @@ namespace EasyTrackTizenAgent
 
         internal async static Task<HttpResponseMessage> post(string api, Dictionary<string, string> body, byte[] fileContent = null)
         {
-            const string SERVER_URL = "http://165.246.43.162:36012";
-            // const string SERVER_URL = "http://165.246.43.163:9876";
+            // const string SERVER_URL = "http://165.246.43.162:36012";
+            const string SERVER_URL = "http://165.246.43.163:9876";
 
             if (fileContent == null)
                 using (HttpClient client = new HttpClient())

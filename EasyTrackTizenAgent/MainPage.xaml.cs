@@ -50,6 +50,8 @@ namespace EasyTrackTizenAgent
             base.OnDisappearing();
         }
 
+        
+
         private void initDataSourcesWithPrivileges()
         {
             PrivacyPrivilegeManager.ResponseContext context = null;

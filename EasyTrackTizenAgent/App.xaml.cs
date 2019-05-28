@@ -1,4 +1,5 @@
-﻿using Xamarin.Forms;
+﻿using Tizen.Wearable.CircularUI.Forms;
+using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
 namespace EasyTrackTizenAgent
@@ -10,7 +11,10 @@ namespace EasyTrackTizenAgent
         {
             InitializeComponent();
 
-            MainPage = new MainPage();
+            if (Tizen.Applications.Preference.Contains("logged_in") && Tizen.Applications.Preference.Get<bool>("logged_in"))
+                MainPage = new MainPage();
+            else
+                MainPage = new AuthenticationPage();
         }
 
         protected override void OnStart()

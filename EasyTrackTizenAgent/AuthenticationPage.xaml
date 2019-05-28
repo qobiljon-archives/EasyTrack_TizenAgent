@@ -1,15 +1,40 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<c:CirclePage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:c="clr-namespace:Tizen.Wearable.CircularUI.Forms;assembly=Tizen.Wearable.CircularUI.Forms" x:Class="EasyTrackTizenAgent.AuthenticationPage">
-    <c:CirclePage.Content>
-        <c:CircleScrollView HorizontalOptions="Fill" VerticalOptions="Fill">
-            <StackLayout Orientation="Vertical" Padding="20" VerticalOptions="CenterAndExpand">
-                <Label Text="EasyTrack&#x0a;Tizen Agent App" FontAttributes="Bold" TextColor="Orange" VerticalOptions="Start" HorizontalTextAlignment="Center" HorizontalOptions="CenterAndExpand" FontSize="Micro"/>
-                <StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand">
-                    <ImageButton x:Name="startDataColButton" IsEnabled="True" Source="start.png" Margin="0,0,10,0"/>
-                </StackLayout>
-                <Label x:Name="filesCountLabel" Text="FILES: 0" FontSize="Micro" TextColor="Orange" HorizontalOptions="Center"/>
-                <Label x:Name="logLabel" MaxLines="30" Text="LOG" FontSize="Micro" TextColor="LightGreen" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="#222" HorizontalTextAlignment="Center" Margin="0,0,0,100"/>
-            </StackLayout>
-        </c:CircleScrollView>
-    </c:CirclePage.Content>
-</c:CirclePage>
+<w:CirclePage xmlns="http://xamarin.com/schemas/2014/forms"
+              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+              xmlns:w="clr-namespace:Tizen.Wearable.CircularUI.Forms;assembly=Tizen.Wearable.CircularUI.Forms"
+              x:Class="EasyTrackTizenAgent.AuthenticationPage"
+              NavigationPage.HasNavigationBar="False" 
+              >
+    <w:CirclePage.Content>
+        <StackLayout HorizontalOptions="CenterAndExpand" 
+                     VerticalOptions="CenterAndExpand"
+                     Spacing="13">
+
+            <Label FontSize="Medium" 
+                   Text="ID"
+                   HorizontalTextAlignment="Center"
+                   Margin="0, 0, 0, -12"/>
+            <w:PopupEntry x:Name="loginEntry"
+                          Placeholder="Username"
+                          HorizontalOptions="CenterAndExpand"
+                          WidthRequest="280"/>
+
+            <Label FontSize="Medium" 
+                   Text="Password" 
+                   HorizontalTextAlignment="Center"
+                   Margin="0, 0, 0, -12"/>
+            <w:PopupEntry x:Name="passwordEntry"
+                          IsPassword="true"
+                          Placeholder="Password"
+                          HorizontalOptions="CenterAndExpand"
+                          WidthRequest="280"/>
+
+            <Button Text="Sign in"
+                    x:Name="signInButton"
+                    WidthRequest="140"
+                    Clicked="SignInClicked"
+                    HorizontalOptions="CenterAndExpand"
+                    Font="Large" />
+        </StackLayout>
+    </w:CirclePage.Content>
+</w:CirclePage>

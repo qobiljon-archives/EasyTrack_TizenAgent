@@ -45,9 +45,6 @@
     <None Update="Main.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>
-    <None Update="TizenSettings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="lib\" />
