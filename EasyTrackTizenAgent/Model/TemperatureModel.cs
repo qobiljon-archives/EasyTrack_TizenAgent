@@ -1,4 +1,4 @@
-﻿namespace Sensors.Model
+﻿namespace EasyTrackTizenAgent.Model
 {
     public class TemperatureModel : BaseSensorModel
     {

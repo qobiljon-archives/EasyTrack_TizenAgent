@@ -1,4 +1,4 @@
-namespace Sensors
+namespace EasyTrackTizenAgent
 {
     internal class Program : global::Xamarin.Forms.Platform.Tizen.FormsApplication
     {

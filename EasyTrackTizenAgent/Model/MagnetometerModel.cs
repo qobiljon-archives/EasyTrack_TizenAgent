@@ -1,11 +1,21 @@
-﻿namespace Sensors.Model
+﻿namespace EasyTrackTizenAgent.Model
 {
-    public class AccelerometerModel : BaseSensorModel
+    public class MagnetometerModel : BaseSensorModel
     {
+        private string accuracy;
         private float x;
         private float y;
         private float z;
 
+        public string Accuracy
+        {
+            get { return accuracy; }
+            set
+            {
+                accuracy = value;
+                OnPropertyChanged();
+            }
+        }
         public float X
         {
             get { return x; }

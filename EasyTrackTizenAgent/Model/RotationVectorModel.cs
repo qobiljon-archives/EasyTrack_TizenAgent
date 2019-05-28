@@ -1,18 +1,28 @@
-﻿namespace Sensors.Model
+﻿namespace EasyTrackTizenAgent.Model
 {
-    public class LinearAccelerationModel : BaseSensorModel
+    public class RotationVectorModel : BaseSensorModel
     {
-        private string accuracy;
+        private string proximity;
+        private float w;
         private float x;
         private float y;
         private float z;
 
         public string Accuracy
         {
-            get { return accuracy; }
+            get { return proximity; }
             set
             {
-                accuracy = value;
+                proximity = value;
+                OnPropertyChanged();
+            }
+        }
+        public float W
+        {
+            get { return w; }
+            set
+            {
+                w = value;
                 OnPropertyChanged();
             }
         }

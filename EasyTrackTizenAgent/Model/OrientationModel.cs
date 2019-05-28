@@ -1,11 +1,11 @@
-﻿namespace Sensors.Model
+﻿namespace EasyTrackTizenAgent.Model
 {
-    public class MagnetometerModel : BaseSensorModel
+    public class OrientationModel : BaseSensorModel
     {
         private string accuracy;
-        private float x;
-        private float y;
-        private float z;
+        private float azimuth;
+        private float pitch;
+        private float roll;
 
         public string Accuracy
         {
@@ -16,30 +16,30 @@
                 OnPropertyChanged();
             }
         }
-        public float X
+        public float Azimuth
         {
-            get { return x; }
+            get { return azimuth; }
             set
             {
-                x = value;
+                azimuth = value;
                 OnPropertyChanged();
             }
         }
-        public float Y
+        public float Pitch
         {
-            get { return y; }
+            get { return pitch; }
             set
             {
-                y = value;
+                pitch = value;
                 OnPropertyChanged();
             }
         }
-        public float Z
+        public float Roll
         {
-            get { return z; }
+            get { return roll; }
             set
             {
-                z = value;
+                roll = value;
                 OnPropertyChanged();
             }
         }

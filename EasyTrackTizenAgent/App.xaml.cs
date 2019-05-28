@@ -1,7 +1,7 @@
 ﻿using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
-namespace Sensors
+namespace EasyTrackTizenAgent
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class App : Application

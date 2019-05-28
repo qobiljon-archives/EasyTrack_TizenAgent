@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace Sensors.Model
+namespace EasyTrackTizenAgent.Model
 {
     public abstract class BaseSensorModel : INotifyPropertyChanged
     {

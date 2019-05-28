@@ -1,11 +1,11 @@
-﻿namespace Sensors.Model
+﻿namespace EasyTrackTizenAgent.Model
 {
-    public class OrientationModel : BaseSensorModel
+    public class LinearAccelerationModel : BaseSensorModel
     {
         private string accuracy;
-        private float azimuth;
-        private float pitch;
-        private float roll;
+        private float x;
+        private float y;
+        private float z;
 
         public string Accuracy
         {
@@ -16,30 +16,30 @@
                 OnPropertyChanged();
             }
         }
-        public float Azimuth
+        public float X
         {
-            get { return azimuth; }
+            get { return x; }
             set
             {
-                azimuth = value;
+                x = value;
                 OnPropertyChanged();
             }
         }
-        public float Pitch
+        public float Y
         {
-            get { return pitch; }
+            get { return y; }
             set
             {
-                pitch = value;
+                y = value;
                 OnPropertyChanged();
             }
         }
-        public float Roll
+        public float Z
         {
-            get { return roll; }
+            get { return z; }
             set
             {
-                roll = value;
+                z = value;
                 OnPropertyChanged();
             }
         }

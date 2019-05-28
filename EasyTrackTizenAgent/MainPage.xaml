@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<c:CirclePage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:c="clr-namespace:Tizen.Wearable.CircularUI.Forms;assembly=Tizen.Wearable.CircularUI.Forms" x:Class="Sensors.MainPage">
+<c:CirclePage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:c="clr-namespace:Tizen.Wearable.CircularUI.Forms;assembly=Tizen.Wearable.CircularUI.Forms" x:Class="EasyTrackTizenAgent.MainPage">
     <c:CirclePage.Content>
         <c:CircleScrollView HorizontalOptions="Fill" VerticalOptions="Fill">
             <StackLayout Orientation="Vertical" Padding="20" VerticalOptions="CenterAndExpand">

@@ -1,31 +1,11 @@
-﻿namespace Sensors.Model
+﻿namespace EasyTrackTizenAgent.Model
 {
-    public class RotationVectorModel : BaseSensorModel
+    public class GyroscopeModel : BaseSensorModel
     {
-        private string proximity;
-        private float w;
         private float x;
         private float y;
         private float z;
 
-        public string Accuracy
-        {
-            get { return proximity; }
-            set
-            {
-                proximity = value;
-                OnPropertyChanged();
-            }
-        }
-        public float W
-        {
-            get { return w; }
-            set
-            {
-                w = value;
-                OnPropertyChanged();
-            }
-        }
         public float X
         {
             get { return x; }

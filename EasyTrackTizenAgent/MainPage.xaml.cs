@@ -5,7 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 using Tizen.Sensor;
-using Sensors.Model;
+using EasyTrackTizenAgent.Model;
 using Tizen.Security;
 using System.Threading;
 using System.Collections.Generic;
@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 using System.Net.Http;
 using System.Json;
 
-namespace Sensors
+namespace EasyTrackTizenAgent
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class MainPage : CirclePage
