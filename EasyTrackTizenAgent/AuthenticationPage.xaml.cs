@@ -4,6 +4,7 @@ using System.Json;
 using System.Net.Http;
 using System.Threading;
 using Tizen.Wearable.CircularUI.Forms;
+using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
 namespace EasyTrackTizenAgent
@@ -36,8 +37,10 @@ namespace EasyTrackTizenAgent
                         Tizen.Applications.Preference.Set("password", passwordEntry.Text);
 
                         IsEnabled = true;
-                        MainPage mainPage = new MainPage();
-                        await Navigation.PushAsync(mainPage);
+                        Device.BeginInvokeOnMainThread(() =>
+                        {
+                            Navigation.PushModalAsync(new MainPage());
+                        });
                     }
                     else
                     {

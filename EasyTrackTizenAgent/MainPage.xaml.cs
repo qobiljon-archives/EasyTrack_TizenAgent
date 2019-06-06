@@ -163,78 +163,91 @@ namespace EasyTrackTizenAgent
             if (accelerometerModel.IsSupported)
             {
                 accelerometer = new Accelerometer();
+                accelerometer.PausePolicy = SensorPausePolicy.None;
                 accelerometer.Interval = Tools.SENSOR_SAMPLING_INTERVAL;
                 accelerometer.DataUpdated += storeAccelerometerDataCallback;
             }
             if (gravityModel.IsSupported)
             {
                 gravity = new GravitySensor();
+                gravity.PausePolicy = SensorPausePolicy.None;
                 gravity.Interval = Tools.SENSOR_SAMPLING_INTERVAL;
                 gravity.DataUpdated += storeGravitySensorDataCallback;
             }
             if (gyroscopeModel.IsSupported)
             {
                 gyroscope = new Gyroscope();
+                gyroscope.PausePolicy = SensorPausePolicy.None;
                 gyroscope.Interval = Tools.SENSOR_SAMPLING_INTERVAL;
                 gyroscope.DataUpdated += storeGyroscopeDataCallback;
             }
             if (hRMModel.IsSupported)
             {
                 hRM = new HeartRateMonitor();
+                hRM.PausePolicy = SensorPausePolicy.None;
                 hRM.Interval = Tools.SENSOR_SAMPLING_INTERVAL;
                 hRM.DataUpdated += storeHeartRateMonitorDataCallback;
             }
             if (humidityModel.IsSupported)
             {
                 humidity = new HumiditySensor();
+                humidity.PausePolicy = SensorPausePolicy.None;
                 humidity.Interval = Tools.SENSOR_SAMPLING_INTERVAL;
                 humidity.DataUpdated += storeHumiditySensorDataCallback;
             }
             if (lightModel.IsSupported)
             {
                 light = new LightSensor();
+                light.PausePolicy = SensorPausePolicy.None;
                 light.Interval = Tools.SENSOR_SAMPLING_INTERVAL;
                 light.DataUpdated += storeLightSensorDataCallback;
             }
             if (linearAccelerationModel.IsSupported)
             {
                 linearAcceleration = new LinearAccelerationSensor();
+                linearAcceleration.PausePolicy = SensorPausePolicy.None;
                 linearAcceleration.Interval = Tools.SENSOR_SAMPLING_INTERVAL;
                 linearAcceleration.DataUpdated += storeLinearAccelerationSensorDataCallback;
             }
             if (magnetometerModel.IsSupported)
             {
                 magnetometer = new Magnetometer();
+                magnetometer.PausePolicy = SensorPausePolicy.None;
                 magnetometer.Interval = Tools.SENSOR_SAMPLING_INTERVAL;
                 magnetometer.DataUpdated += storeMagnetometerDataCallback;
             }
             if (orientationModel.IsSupported)
             {
                 orientation = new OrientationSensor();
+                orientation.PausePolicy = SensorPausePolicy.None;
                 orientation.Interval = Tools.SENSOR_SAMPLING_INTERVAL;
                 orientation.DataUpdated += storeOrientationSensorDataCallback;
             }
             if (pressureModel.IsSupported)
             {
                 pressure = new PressureSensor();
+                pressure.PausePolicy = SensorPausePolicy.None;
                 pressure.Interval = Tools.SENSOR_SAMPLING_INTERVAL;
                 pressure.DataUpdated += storePressureSensorDataCallback;
             }
             if (proximityModel.IsSupported)
             {
                 proximity = new ProximitySensor();
+                proximity.PausePolicy = SensorPausePolicy.None;
                 proximity.Interval = Tools.SENSOR_SAMPLING_INTERVAL;
                 proximity.DataUpdated += storeProximitySensorDataCallback;
             }
             if (temperatureModel.IsSupported)
             {
                 temperature = new TemperatureSensor();
+                temperature.PausePolicy = SensorPausePolicy.None;
                 temperature.Interval = Tools.SENSOR_SAMPLING_INTERVAL;
                 temperature.DataUpdated += storeTemperatureSensorDataCallback;
             }
             if (ultravioletModel.IsSupported)
             {
                 ultraviolet = new UltravioletSensor();
+                ultraviolet.PausePolicy = SensorPausePolicy.None;
                 ultraviolet.Interval = Tools.SENSOR_SAMPLING_INTERVAL;
                 ultraviolet.DataUpdated += storeUltravioletSensorDataCallback;
             }
@@ -330,6 +343,8 @@ namespace EasyTrackTizenAgent
         private void startDataCollectionClick(object sender, EventArgs e)
         {
             log("Sensor data collection started");
+            Tizen.System.Power.RequestCpuLock(0);
+
             accelerometer?.Start();
             gravity?.Start();
             gyroscope?.Start();
@@ -350,6 +365,8 @@ namespace EasyTrackTizenAgent
         private void stopDataCollectionClick(object sender, EventArgs e)
         {
             log("Sensor data collection stopped");
+            Tizen.System.Power.ReleaseCpuLock();
+
             accelerometer?.Stop();
             gravity?.Stop();
             gyroscope?.Stop();

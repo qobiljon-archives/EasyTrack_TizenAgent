@@ -61,7 +61,7 @@ namespace EasyTrackTizenAgent
                     return await client.PostAsync($"{SERVER_URL}/{api}", formData);
                 }
         }
-        
+
         internal static void sendHeartBeatMessage()
         {
             new Thread(async () =>

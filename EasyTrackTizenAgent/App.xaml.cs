@@ -15,7 +15,7 @@ namespace EasyTrackTizenAgent
             if (Tizen.Applications.Preference.Contains("logged_in") && Tizen.Applications.Preference.Get<bool>("logged_in"))
                 MainPage = new MainPage();
             else
-                MainPage = new AuthenticationPage();
+                MainPage = new NavigationPage(new AuthenticationPage());
         }
 
         protected override void OnStart()
