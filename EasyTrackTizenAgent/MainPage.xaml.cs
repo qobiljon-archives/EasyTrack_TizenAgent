@@ -13,6 +13,9 @@ using Samsung.Sap;
 using System.Threading.Tasks;
 using System.Net.Http;
 using System.Json;
+using Tizen.Applications;
+using Prefs = Tizen.Applications.Preference;
+using Xamarin.Forms;
 
 namespace EasyTrackTizenAgent
 {
@@ -23,8 +26,9 @@ namespace EasyTrackTizenAgent
         {
             InitializeComponent();
 
+            dataRateMap = new Dictionary<int, int>();
+            sensorMap = new Dictionary<int, Sensor>();
             initDataSourcesWithPrivileges();
-
             try
             {
                 initAgentConnection();
@@ -34,6 +38,11 @@ namespace EasyTrackTizenAgent
                 log("BLE Connection failed!");
             }
         }
+
+        #region Variables
+        private Dictionary<int, int> dataRateMap;
+        private Dictionary<int, Sensor> sensorMap;
+        #endregion
 
         protected override void OnAppearing()
         {
@@ -64,7 +73,7 @@ namespace EasyTrackTizenAgent
                         Environment.Exit(1);
                     }
                     else
-                        initDataSources();
+                        initCampaignDataSources();
                 };
             else
             {
@@ -75,7 +84,7 @@ namespace EasyTrackTizenAgent
             switch (PrivacyPrivilegeManager.CheckPermission(Tools.HEALTHINFO_PRIVILEGE))
             {
                 case CheckResult.Allow:
-                    initDataSources();
+                    initCampaignDataSources();
                     break;
                 case CheckResult.Deny:
                     Toast.DisplayText("Please provide the necessary privileges for the application to run!");
@@ -89,7 +98,7 @@ namespace EasyTrackTizenAgent
             }
         }
 
-        private void initDataSources()
+        private void initCampaignDataSources()
         {
             #region Assign sensor model references
             accelerometerModel = new AccelerometerModel
@@ -164,94 +173,152 @@ namespace EasyTrackTizenAgent
             {
                 accelerometer = new Accelerometer();
                 accelerometer.PausePolicy = SensorPausePolicy.None;
-                accelerometer.Interval = Tools.SENSOR_SAMPLING_INTERVAL;
+                accelerometer.Interval = Tools.DEFAULT_SENSOR_SAMPLING_INTERVAL;
                 accelerometer.DataUpdated += storeAccelerometerDataCallback;
+                sensorMap[Tools.ACCELEROMETER] = accelerometer;
             }
             if (gravityModel.IsSupported)
             {
                 gravity = new GravitySensor();
                 gravity.PausePolicy = SensorPausePolicy.None;
-                gravity.Interval = Tools.SENSOR_SAMPLING_INTERVAL;
+                gravity.Interval = Tools.DEFAULT_SENSOR_SAMPLING_INTERVAL;
                 gravity.DataUpdated += storeGravitySensorDataCallback;
+                sensorMap[Tools.GRAVITY] = gravity;
             }
             if (gyroscopeModel.IsSupported)
             {
                 gyroscope = new Gyroscope();
                 gyroscope.PausePolicy = SensorPausePolicy.None;
-                gyroscope.Interval = Tools.SENSOR_SAMPLING_INTERVAL;
+                gyroscope.Interval = Tools.DEFAULT_SENSOR_SAMPLING_INTERVAL;
                 gyroscope.DataUpdated += storeGyroscopeDataCallback;
+                sensorMap[Tools.GYROSCOPE] = gyroscope;
             }
             if (hRMModel.IsSupported)
             {
                 hRM = new HeartRateMonitor();
                 hRM.PausePolicy = SensorPausePolicy.None;
-                hRM.Interval = Tools.SENSOR_SAMPLING_INTERVAL;
+                hRM.Interval = Tools.DEFAULT_SENSOR_SAMPLING_INTERVAL;
                 hRM.DataUpdated += storeHeartRateMonitorDataCallback;
+                sensorMap[Tools.HRM] = hRM;
             }
             if (humidityModel.IsSupported)
             {
                 humidity = new HumiditySensor();
                 humidity.PausePolicy = SensorPausePolicy.None;
-                humidity.Interval = Tools.SENSOR_SAMPLING_INTERVAL;
+                humidity.Interval = Tools.DEFAULT_SENSOR_SAMPLING_INTERVAL;
                 humidity.DataUpdated += storeHumiditySensorDataCallback;
+                sensorMap[Tools.HUMIDITY] = humidity;
             }
             if (lightModel.IsSupported)
             {
                 light = new LightSensor();
                 light.PausePolicy = SensorPausePolicy.None;
-                light.Interval = Tools.SENSOR_SAMPLING_INTERVAL;
+                light.Interval = Tools.DEFAULT_SENSOR_SAMPLING_INTERVAL;
                 light.DataUpdated += storeLightSensorDataCallback;
+                sensorMap[Tools.LIGHT] = light;
             }
             if (linearAccelerationModel.IsSupported)
             {
                 linearAcceleration = new LinearAccelerationSensor();
                 linearAcceleration.PausePolicy = SensorPausePolicy.None;
-                linearAcceleration.Interval = Tools.SENSOR_SAMPLING_INTERVAL;
+                linearAcceleration.Interval = Tools.DEFAULT_SENSOR_SAMPLING_INTERVAL;
                 linearAcceleration.DataUpdated += storeLinearAccelerationSensorDataCallback;
+                sensorMap[Tools.LINEARACCELERATION] = linearAcceleration;
             }
             if (magnetometerModel.IsSupported)
             {
                 magnetometer = new Magnetometer();
                 magnetometer.PausePolicy = SensorPausePolicy.None;
-                magnetometer.Interval = Tools.SENSOR_SAMPLING_INTERVAL;
+                magnetometer.Interval = Tools.DEFAULT_SENSOR_SAMPLING_INTERVAL;
                 magnetometer.DataUpdated += storeMagnetometerDataCallback;
+                sensorMap[Tools.MAGNETOMETER] = magnetometer;
             }
             if (orientationModel.IsSupported)
             {
                 orientation = new OrientationSensor();
                 orientation.PausePolicy = SensorPausePolicy.None;
-                orientation.Interval = Tools.SENSOR_SAMPLING_INTERVAL;
+                orientation.Interval = Tools.DEFAULT_SENSOR_SAMPLING_INTERVAL;
                 orientation.DataUpdated += storeOrientationSensorDataCallback;
+                sensorMap[Tools.ORIENTATION] = orientation;
             }
             if (pressureModel.IsSupported)
             {
                 pressure = new PressureSensor();
                 pressure.PausePolicy = SensorPausePolicy.None;
-                pressure.Interval = Tools.SENSOR_SAMPLING_INTERVAL;
+                pressure.Interval = Tools.DEFAULT_SENSOR_SAMPLING_INTERVAL;
                 pressure.DataUpdated += storePressureSensorDataCallback;
+                sensorMap[Tools.PRESSURE] = pressure;
             }
             if (proximityModel.IsSupported)
             {
                 proximity = new ProximitySensor();
                 proximity.PausePolicy = SensorPausePolicy.None;
-                proximity.Interval = Tools.SENSOR_SAMPLING_INTERVAL;
+                proximity.Interval = Tools.DEFAULT_SENSOR_SAMPLING_INTERVAL;
                 proximity.DataUpdated += storeProximitySensorDataCallback;
+                sensorMap[Tools.PROXIMITY] = proximity;
             }
             if (temperatureModel.IsSupported)
             {
                 temperature = new TemperatureSensor();
                 temperature.PausePolicy = SensorPausePolicy.None;
-                temperature.Interval = Tools.SENSOR_SAMPLING_INTERVAL;
+                temperature.Interval = Tools.DEFAULT_SENSOR_SAMPLING_INTERVAL;
                 temperature.DataUpdated += storeTemperatureSensorDataCallback;
+                sensorMap[Tools.TEMPERATURE] = temperature;
             }
             if (ultravioletModel.IsSupported)
             {
                 ultraviolet = new UltravioletSensor();
                 ultraviolet.PausePolicy = SensorPausePolicy.None;
-                ultraviolet.Interval = Tools.SENSOR_SAMPLING_INTERVAL;
+                ultraviolet.Interval = Tools.DEFAULT_SENSOR_SAMPLING_INTERVAL;
                 ultraviolet.DataUpdated += storeUltravioletSensorDataCallback;
+                sensorMap[Tools.ULTRAVIOLET] = ultraviolet;
             }
             #endregion
+
+            loadCampaignSettings();
+        }
+
+        private void loadCampaignSettings()
+        {
+            new Thread(async () =>
+            {
+                HttpResponseMessage response = await Tools.post(Tools.API_GET_CAMPAIGN_SETTINGS, new Dictionary<string, string>()
+                    {
+                        { "username", Prefs.Get<string>("username") },
+                        { "password", Prefs.Get<string>("password") },
+                        { "campaign_id", Prefs.Get<int>("campaign_id").ToString() },
+                        { "device", "wearable-tizen" }
+                    });
+                if (response.IsSuccessStatusCode)
+                {
+                    JsonValue resJson = JsonValue.Parse(await response.Content.ReadAsStringAsync());
+                    ServerResult resCode = (ServerResult)int.Parse(resJson["result"].ToString());
+                    if (resCode == ServerResult.OK)
+                    {
+                        JsonObject campaignSettingsJson = (JsonObject)resJson["campaign_settings"];
+                        foreach (JsonObject dataSourceJson in (JsonArray)campaignSettingsJson["data_sources"])
+                        {
+                            string device = dataSourceJson["device"];
+                            int dataRate = dataSourceJson["data_rate"];
+                            if (device.Equals("wearable-tizen"))
+                            {
+                                dataRateMap[dataSourceJson["source_id"]] = dataSourceJson["data_rate"];
+                                sensorMap[dataSourceJson["source_id"]].Interval = Math.Min(dataSourceJson["data_rate"], (uint)sensorMap[dataSourceJson["source_id"]].MinInterval);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        Toast.DisplayText("Failed to load campaign settings! Please refer to the campaign creator!");
+                        Environment.Exit(0);
+                    }
+                }
+                else
+                {
+                    Toast.DisplayText("Failed to load campaign settings! Please refer to the campaign creator!");
+                    Environment.Exit(0);
+                }
+            }).Start();
         }
 
         private async void initAgentConnection()
@@ -345,19 +412,32 @@ namespace EasyTrackTizenAgent
             log("Sensor data collection started");
             Tizen.System.Power.RequestCpuLock(0);
 
-            accelerometer?.Start();
-            gravity?.Start();
-            gyroscope?.Start();
-            hRM?.Start();
-            humidity?.Start();
-            light?.Start();
-            linearAcceleration?.Start();
-            magnetometer?.Start();
-            orientation?.Start();
-            pressure?.Start();
-            proximity?.Start();
-            temperature?.Start();
-            ultraviolet?.Start();
+            if (dataRateMap.ContainsKey(Tools.ACCELEROMETER))
+                accelerometer?.Start();
+            if (dataRateMap.ContainsKey(Tools.GRAVITY))
+                gravity?.Start();
+            if (dataRateMap.ContainsKey(Tools.GYROSCOPE))
+                gyroscope?.Start();
+            if (dataRateMap.ContainsKey(Tools.HRM))
+                hRM?.Start();
+            if (dataRateMap.ContainsKey(Tools.HUMIDITY))
+                humidity?.Start();
+            if (dataRateMap.ContainsKey(Tools.LIGHT))
+                light?.Start();
+            if (dataRateMap.ContainsKey(Tools.LINEARACCELERATION))
+                linearAcceleration?.Start();
+            if (dataRateMap.ContainsKey(Tools.MAGNETOMETER))
+                magnetometer?.Start();
+            if (dataRateMap.ContainsKey(Tools.ORIENTATION))
+                orientation?.Start();
+            if (dataRateMap.ContainsKey(Tools.PRESSURE))
+                pressure?.Start();
+            if (dataRateMap.ContainsKey(Tools.PROXIMITY))
+                proximity?.Start();
+            if (dataRateMap.ContainsKey(Tools.TEMPERATURE))
+                temperature?.Start();
+            if (dataRateMap.ContainsKey(Tools.ULTRAVIOLET))
+                ultraviolet?.Start();
 
             startDataColButton.IsEnabled = false;
             stopDataColButton.IsEnabled = true;
@@ -367,19 +447,32 @@ namespace EasyTrackTizenAgent
             log("Sensor data collection stopped");
             Tizen.System.Power.ReleaseCpuLock();
 
-            accelerometer?.Stop();
-            gravity?.Stop();
-            gyroscope?.Stop();
-            hRM?.Stop();
-            humidity?.Stop();
-            light?.Stop();
-            linearAcceleration?.Stop();
-            magnetometer?.Stop();
-            orientation?.Stop();
-            pressure?.Stop();
-            proximity?.Stop();
-            temperature?.Stop();
-            ultraviolet?.Stop();
+            if (dataRateMap.ContainsKey(Tools.ACCELEROMETER))
+                accelerometer?.Stop();
+            if (dataRateMap.ContainsKey(Tools.GRAVITY))
+                gravity?.Stop();
+            if (dataRateMap.ContainsKey(Tools.GYROSCOPE))
+                gyroscope?.Stop();
+            if (dataRateMap.ContainsKey(Tools.HRM))
+                hRM?.Stop();
+            if (dataRateMap.ContainsKey(Tools.HUMIDITY))
+                humidity?.Stop();
+            if (dataRateMap.ContainsKey(Tools.LIGHT))
+                light?.Stop();
+            if (dataRateMap.ContainsKey(Tools.LINEARACCELERATION))
+                linearAcceleration?.Stop();
+            if (dataRateMap.ContainsKey(Tools.MAGNETOMETER))
+                magnetometer?.Stop();
+            if (dataRateMap.ContainsKey(Tools.ORIENTATION))
+                orientation?.Stop();
+            if (dataRateMap.ContainsKey(Tools.PRESSURE))
+                pressure?.Stop();
+            if (dataRateMap.ContainsKey(Tools.PROXIMITY))
+                proximity?.Stop();
+            if (dataRateMap.ContainsKey(Tools.TEMPERATURE))
+                temperature?.Stop();
+            if (dataRateMap.ContainsKey(Tools.ULTRAVIOLET))
+                ultraviolet?.Stop();
 
             startDataColButton.IsEnabled = true;
             stopDataColButton.IsEnabled = false;
@@ -578,13 +671,16 @@ namespace EasyTrackTizenAgent
 
         internal void log(string message)
         {
-            if (logLinesCount == logLabel.MaxLines)
-                logLabel.Text = $"{logLabel.Text.Substring(logLabel.Text.IndexOf('\n') + 1)}\n{message}";
-            else
+            Device.BeginInvokeOnMainThread(() =>
             {
-                logLabel.Text = $"{logLabel.Text}\n{message}";
-                logLinesCount++;
-            }
+                if (logLinesCount == logLabel.MaxLines)
+                    logLabel.Text = $"{logLabel.Text.Substring(logLabel.Text.IndexOf('\n') + 1)}\n{message}";
+                else
+                {
+                    logLabel.Text = $"{logLabel.Text}\n{message}";
+                    logLinesCount++;
+                }
+            });
         }
 
         private void eraseSensorData()
@@ -642,11 +738,11 @@ namespace EasyTrackTizenAgent
                 {
                     filesCount = countSensorDataFiles();
 
-                    filesCountLabel.Text = $"FILES: {filesCount}";
+                    Device.BeginInvokeOnMainThread(() => { filesCountLabel.Text = $"FILES: {filesCount}"; });
 
                     watcher.Filter = "*.csv";
-                    watcher.Deleted += (s, e) => { filesCountLabel.Text = $"FILES: {--filesCount}"; };
-                    watcher.Created += (s, e) => { filesCountLabel.Text = $"FILES: {++filesCount}"; };
+                    watcher.Deleted += (s, e) => { Device.BeginInvokeOnMainThread(() => { filesCountLabel.Text = $"FILES: {--filesCount}"; }); };
+                    watcher.Created += (s, e) => { Device.BeginInvokeOnMainThread(() => { filesCountLabel.Text = $"FILES: {++filesCount}"; }); };
 
                     watcher.EnableRaisingEvents = true;
                     while (!stopFilesCounterThread) ;
@@ -683,11 +779,11 @@ namespace EasyTrackTizenAgent
                 terminateFilesCounterThread();
                 for (int n = 0; !stopSubmitDataThread && n < fileNamesInLong.Count - 1; n++)
                 {
-                    filesCountLabel.Text = $"{(n + 1) * 100 / fileNamesInLong.Count}% UPLOADED";
+                    Device.BeginInvokeOnMainThread(() => { filesCountLabel.Text = $"{(n + 1) * 100 / fileNamesInLong.Count}% UPLOADED"; });
                     string filepath = Path.Combine(Tools.APP_DIR, $"{fileNamesInLong[n]}.csv");
                     await reportToApiServer(path: filepath, postTransferTask: new Task(() => { File.Delete(filepath); }));
                 }
-                filesCountLabel.Text = $"100% UPLOADED";
+                Device.BeginInvokeOnMainThread(() => { filesCountLabel.Text = $"100% UPLOADED"; });
                 Thread.Sleep(300);
                 startFilesCounterThread();
             });

@@ -13,7 +13,7 @@ namespace EasyTrackTizenAgent
         // Common constants
         internal const string TAG = "EasyTrack";
         internal const ushort CHANNEL_ID = 104;
-        internal const uint SENSOR_SAMPLING_INTERVAL = 1000; // milliseconds
+        internal const uint DEFAULT_SENSOR_SAMPLING_INTERVAL = 1000; // milliseconds
         internal const string HEALTHINFO_PRIVILEGE = "http://tizen.org/privilege/healthinfo";
         // API constants
         internal const string API_REGISTER = "register";
@@ -22,25 +22,27 @@ namespace EasyTrackTizenAgent
         internal const string API_SUBMIT_HEARTBEAT = "heartbeat";
         internal const string API_SUBMIT_DATA = "submit_data";
         internal const string API_NOTIFY = "notify";
+        internal const string API_GET_CAMPAIGN_SETTINGS = "get_campaign_settings";
 
 
         // Actions
         public const byte REQUEST_DATA = 0x01;
 
         // Sensors
-        internal const ushort ACCELEROMETER = 1;
-        internal const ushort GRAVITY = 2;
-        internal const ushort GYROSCOPE = 3;
-        internal const ushort HRM = 4;
-        internal const ushort HUMIDITY = 5;
-        internal const ushort LIGHT = 6;
-        internal const ushort LINEARACCELERATION = 7;
-        internal const ushort MAGNETOMETER = 8;
-        internal const ushort ORIENTATION = 9;
-        internal const ushort PRESSURE = 10;
-        internal const ushort PROXIMITY = 11;
-        internal const ushort TEMPERATURE = 12;
-        internal const ushort ULTRAVIOLET = 13;
+        internal const ushort ACCELEROMETER = 0x01;
+        internal const ushort GRAVITY = 0x02;
+        internal const ushort GYROSCOPE = 0x03;
+        internal const ushort HRM = 0x04;
+        internal const ushort HUMIDITY = 0x05;
+        internal const ushort LIGHT = 0x06;
+        internal const ushort LINEARACCELERATION = 0x07;
+        internal const ushort MAGNETOMETER = 0x08;
+        internal const ushort ORIENTATION = 0x09;
+        internal const ushort PRESSURE = 0x0a;
+        internal const ushort PROXIMITY = 0x0b;
+        internal const ushort TEMPERATURE = 0x0c;
+        internal const ushort ULTRAVIOLET = 0x0d;
+        internal static readonly ushort[] ALL_SENSORS = { ACCELEROMETER, GRAVITY, GYROSCOPE, HRM, HUMIDITY, LIGHT, LINEARACCELERATION, MAGNETOMETER, ORIENTATION, PRESSURE, PROXIMITY, TEMPERATURE, ULTRAVIOLET };
 
         internal async static Task<HttpResponseMessage> post(string api, Dictionary<string, string> body, byte[] fileContent = null)
         {

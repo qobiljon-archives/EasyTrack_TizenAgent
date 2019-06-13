@@ -42,11 +42,16 @@ namespace EasyTrackTizenAgent
                         Prefs.Set("logged_in", true);
                         Prefs.Set("username", usernameEntry.Text);
                         Prefs.Set("password", passwordEntry.Text);
+                        Prefs.Set("recruited", (bool)resJson["recruited"]);
+                        Prefs.Set("campaign_id", (int)resJson["campaign_id"]);
 
-                        IsEnabled = true;
                         Device.BeginInvokeOnMainThread(() =>
                         {
-                            Navigation.PushModalAsync(new MainPage());
+                            IsEnabled = true;
+                            if (Prefs.Get<bool>("recruited"))
+                                Navigation.PushModalAsync(new MainPage());
+                            else
+                                Toast.DisplayText($"You haven't registered for any campaign yet, please register first!");
                         });
                     }
                     else
