@@ -13,7 +13,6 @@ using Samsung.Sap;
 using System.Threading.Tasks;
 using System.Net.Http;
 using System.Json;
-using Tizen.Applications;
 using Prefs = Tizen.Applications.Preference;
 using Xamarin.Forms;
 
@@ -29,14 +28,7 @@ namespace EasyTrackTizenAgent
             dataRateMap = new Dictionary<int, int>();
             sensorMap = new Dictionary<int, Sensor>();
             initDataSourcesWithPrivileges();
-            try
-            {
-                initAgentConnection();
-            }
-            catch (Exception)
-            {
-                log("BLE Connection failed!");
-            }
+            new Thread(async () => await initAgentConnection()).Start();
         }
 
         #region Variables
@@ -47,7 +39,14 @@ namespace EasyTrackTizenAgent
         protected override void OnAppearing()
         {
             terminateFilesCounterThread();
-            startFilesCounterThread();
+            try
+            {
+                startFilesCounterThread();
+            }
+            catch (Exception e)
+            {
+                Toast.DisplayText(e.Message);
+            }
 
             base.OnAppearing();
         }
@@ -306,6 +305,7 @@ namespace EasyTrackTizenAgent
                                 sensorMap[dataSourceJson["source_id"]].Interval = Math.Min(dataSourceJson["data_rate"], (uint)sensorMap[dataSourceJson["source_id"]].MinInterval);
                             }
                         }
+                        log($"Campaign settings loaded! ({dataRateMap.Count} sources set up)");
                     }
                     else
                     {
@@ -321,37 +321,51 @@ namespace EasyTrackTizenAgent
             }).Start();
         }
 
-        private async void initAgentConnection()
+        private async Task initAgentConnection()
         {
-            agent = await Agent.GetAgent("/sample/hello", onConnect: (con) =>
+            try
             {
-                try
-                {
-                    if (con.Peer.ProfileVersion == agent.ProfileVersion)
+                agent = await Agent.GetAgent(
+                    profile: "/kr/ac/inha/nsl/easytrack",
+                    onConnect: (con) =>
                     {
-                        con.DataReceived += (sender, evt) =>
+                        try
                         {
-                            if (evt.Channel.ID == Tools.CHANNEL_ID)
+                            if (con.Peer.ProfileVersion == agent.ProfileVersion)
                             {
-                                byte request = evt.Data[0];
+                                con.DataReceived += (sender, evt) =>
+                                {
+                                    if (evt.Channel.ID == Tools.CHANNEL_ID)
+                                    {
+                                        byte request = evt.Data[0];
 
-                                if (request == Tools.REQUEST_DATA)
-                                    reportDataCollection(reportDataColButton, new EventArgs());
+                                        if (request == Tools.REQUEST_DATA)
+                                            reportDataCollection(reportDataColButton, new EventArgs());
+                                    }
+                                };
+                                conn = con;
+                                peer = conn.Peer;
+                                Device.BeginInvokeOnMainThread(new Action(() => Toast.DisplayText("Connected to Android Agent!")));
+                                return true;
                             }
-                        };
-                        conn = con;
-                        peer = conn.Peer;
-                        return true;
+                            else
+                            {
+                                Device.BeginInvokeOnMainThread(new Action(() => Toast.DisplayText("Couldn't connect to Android Agent!")));
+                                return false;
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            Device.BeginInvokeOnMainThread(new Action(() => Toast.DisplayText($"Couldn't connect to Android Agent! Message: {e.Message}")));
+                            return false;
+                        }
                     }
-                    else
-                        return false;
-                }
-                catch (Exception e)
-                {
-                    Toast.DisplayText(e.Message);
-                    return false;
-                }
-            });
+                );
+            }
+            catch (Exception e)
+            {
+                Device.BeginInvokeOnMainThread(new Action(() => Toast.DisplayText(e.Message)));
+            }
         }
 
         #region Variables

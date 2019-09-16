@@ -49,7 +49,9 @@ namespace EasyTrackTizenAgent
                         {
                             IsEnabled = true;
                             if (Prefs.Get<bool>("recruited"))
+                            {
                                 Navigation.PushModalAsync(new MainPage());
+                            }
                             else
                                 Toast.DisplayText($"You haven't registered for any campaign yet, please register first!");
                         });

@@ -1,12 +1,11 @@
 <resources>
-	<application name="MyApplication">
-		<serviceProfile id="/kr/ac/inha/nsl/easytrack" name="MyMessage" role="consumer"  version="1.0">
+	<application name="EasyTrack">
+		<serviceProfile id="/kr/ac/inha/nsl/easytrack" name="EasyTrack_TizenAgent" role="consumer"  version="1.0">
 			<supportedTransports>
 				<transport type="TRANSPORT_BT"/>
-				<transport type="TRANSPORT_WIFI"/>
         <transport type="TRANSPORT_BLE"/>
 			</supportedTransports>
-			<serviceChannel id="110" dataRate="low" priority="low" reliability="enable">
+			<serviceChannel id="111" dataRate="high" priority="high" reliability="enable">
 			</serviceChannel>
 		</serviceProfile>
 	</application>

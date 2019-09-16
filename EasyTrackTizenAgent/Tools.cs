@@ -46,8 +46,7 @@ namespace EasyTrackTizenAgent
 
         internal async static Task<HttpResponseMessage> post(string api, Dictionary<string, string> body, byte[] fileContent = null)
         {
-            const string SERVER_URL = "http://165.246.43.162:36012";
-            // const string SERVER_URL = "http://165.246.43.163:9876";
+            const string SERVER_URL = "http://165.246.43.97:36012";
 
             if (fileContent == null)
                 using (HttpClient client = new HttpClient())
