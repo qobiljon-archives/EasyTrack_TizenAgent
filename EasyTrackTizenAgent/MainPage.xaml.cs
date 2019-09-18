@@ -28,7 +28,7 @@ namespace EasyTrackTizenAgent
             dataRateMap = new Dictionary<int, int>();
             sensorMap = new Dictionary<int, Sensor>();
             initDataSourcesWithPrivileges();
-            new Thread(async () => await initAgentConnection()).Start();
+            //new Thread(async () => await initAgentConnection()).Start();
         }
 
         #region Variables
@@ -302,7 +302,7 @@ namespace EasyTrackTizenAgent
                             if (device.Equals("wearable-tizen"))
                             {
                                 dataRateMap[dataSourceJson["source_id"]] = dataSourceJson["data_rate"];
-                                sensorMap[dataSourceJson["source_id"]].Interval = Math.Min(dataSourceJson["data_rate"], (uint)sensorMap[dataSourceJson["source_id"]].MinInterval);
+                                sensorMap[dataSourceJson["source_id"]].Interval = Math.Max(dataSourceJson["data_rate"], Tools.MINIMUM_SENSOR_SAMPLING_INTERVAL);
                             }
                         }
                         log($"Campaign settings loaded! ({dataRateMap.Count} sources set up)");
@@ -759,7 +759,8 @@ namespace EasyTrackTizenAgent
                     watcher.Created += (s, e) => { Device.BeginInvokeOnMainThread(() => { filesCountLabel.Text = $"FILES: {++filesCount}"; }); };
 
                     watcher.EnableRaisingEvents = true;
-                    while (!stopFilesCounterThread) ;
+                    while (!stopFilesCounterThread)
+                        Thread.Sleep(100);
 
                     watcher.EnableRaisingEvents = false;
                 }
@@ -777,32 +778,46 @@ namespace EasyTrackTizenAgent
 
         private void startSubmitDataThread()
         {
-            submitDataThread = new Thread(async () =>
+            try
             {
-                // Get list of files and sort in increasing order
-                string[] filePaths = Directory.GetFiles(Tools.APP_DIR, "*.csv");
-                List<long> fileNamesInLong = new List<long>();
-                for (int n = 0; !stopSubmitDataThread && n < filePaths.Length; n++)
+                submitDataThread = new Thread(async () =>
                 {
-                    string tmp = filePaths[n].Substring(filePaths[n].LastIndexOf('/') + 1);
-                    fileNamesInLong.Add(long.Parse(tmp.Substring(0, tmp.LastIndexOf('.'))));
-                }
-                fileNamesInLong.Sort();
+                    try
+                    {
+                        // Get list of files and sort in increasing order
+                        string[] filePaths = Directory.GetFiles(Tools.APP_DIR, "*.csv");
+                        List<long> fileNamesInLong = new List<long>();
+                        for (int n = 0; !stopSubmitDataThread && n < filePaths.Length; n++)
+                        {
+                            string tmp = filePaths[n].Substring(filePaths[n].LastIndexOf('/') + 1);
+                            fileNamesInLong.Add(long.Parse(tmp.Substring(0, tmp.LastIndexOf('.'))));
+                        }
+                        fileNamesInLong.Sort();
 
-                // Submit files to server except the last file
-                terminateFilesCounterThread();
-                for (int n = 0; !stopSubmitDataThread && n < fileNamesInLong.Count - 1; n++)
-                {
-                    Device.BeginInvokeOnMainThread(() => { filesCountLabel.Text = $"{(n + 1) * 100 / fileNamesInLong.Count}% UPLOADED"; });
-                    string filepath = Path.Combine(Tools.APP_DIR, $"{fileNamesInLong[n]}.csv");
-                    await reportToApiServer(path: filepath, postTransferTask: new Task(() => { File.Delete(filepath); }));
-                }
-                Device.BeginInvokeOnMainThread(() => { filesCountLabel.Text = $"100% UPLOADED"; });
-                Thread.Sleep(300);
-                startFilesCounterThread();
-            });
-            submitDataThread.IsBackground = true;
-            submitDataThread.Start();
+                        // Submit files to server except the last file
+                        terminateFilesCounterThread();
+                        for (int n = 0; !stopSubmitDataThread && n < fileNamesInLong.Count - 1; n++)
+                        {
+                            Device.BeginInvokeOnMainThread(() => { filesCountLabel.Text = $"{(n + 1) * 100 / fileNamesInLong.Count}% UPLOADED"; });
+                            string filepath = Path.Combine(Tools.APP_DIR, $"{fileNamesInLong[n]}.csv");
+                            await reportToApiServer(path: filepath, postTransferTask: new Task(() => { File.Delete(filepath); }));
+                        }
+                        Device.BeginInvokeOnMainThread(() => { filesCountLabel.Text = $"100% UPLOADED"; });
+                        Thread.Sleep(300);
+                        startFilesCounterThread();
+                    }
+                    catch (Exception e)
+                    {
+                        Device.BeginInvokeOnMainThread(new Action(() => Toast.DisplayText(e.Message)));
+                    }
+                });
+                submitDataThread.IsBackground = true;
+                submitDataThread.Start();
+            }
+            catch (Exception e)
+            {
+                Toast.DisplayText(e.Message);
+            }
         }
     }
 }

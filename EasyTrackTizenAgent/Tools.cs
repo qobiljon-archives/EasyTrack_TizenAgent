@@ -14,6 +14,7 @@ namespace EasyTrackTizenAgent
         internal const string TAG = "EasyTrack";
         internal const ushort CHANNEL_ID = 104;
         internal const uint DEFAULT_SENSOR_SAMPLING_INTERVAL = 1000; // milliseconds
+        internal const uint MINIMUM_SENSOR_SAMPLING_INTERVAL = 250; // milliseconds
         internal const string HEALTHINFO_PRIVILEGE = "http://tizen.org/privilege/healthinfo";
         // API constants
         internal const string API_REGISTER = "register";
